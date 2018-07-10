@@ -54,6 +54,8 @@ class StudentController extends Controller
 
     public function create_step_2_store($id, Request $request)
     {
+        // dd($request->category);
+
         $student = Student::findOrFail($id);
         $student->category_id = $request->category;
         $student->save();

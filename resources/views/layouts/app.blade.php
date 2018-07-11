@@ -76,6 +76,16 @@
                         <a class="dropdown-item" href="{{ url('/vehicle') }}">View all</a>
                     </div>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Transport Fees
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url('/transport-fee/theory') }}">Theory Test</a>
+                        <a class="dropdown-item" href="{{ url('/transport-fee/driving') }}">Driving Test</a>
+                        <a class="dropdown-item" href="{{ url('/transport-fee/license') }}">License Fee</a>
+                    </div>
+                </li>
             </ul>
         </div>
     </nav>

@@ -8,7 +8,7 @@
                 <h3>{{ $type }}</h3>
             </div>
             <div class="col-md-12">
-                <table>
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Student Name</th>

@@ -5,10 +5,13 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h3>{{ $type }}</h3>
+                <div class="row" style="margin-bottom: 10px;">
+                    <h3 style="margin-right: 10px;">Theory Fee</h3>
+                    <button data-toggle="modal" data-target="#feeAddModel" class="btn btn-success">Add</button>
+                </div>
             </div>
             <div class="col-md-12">
-                <table>
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Student Name</th>
@@ -38,6 +41,35 @@
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="feeAddModel" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document" style="width:100%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Theory Fee</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="POST">
+                        <div class="form-group">
+                            <label>Select Student</label>
+                            <select class="form-control">
+                                @foreach ($students as $student)
+                                    <option>{{ $student->name }} - {{ $student->phone }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

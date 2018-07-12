@@ -66,7 +66,9 @@ Route::prefix('/transport-fee')->group(function () {
         Route::get('/', function () {
             $fees = Transportfee::where('type', 'theory')->get();
             $type = 'Theory Fees';
-            return view('transportfee.theory.index', compact('fees', 'type'));
+
+            $students = Student::all();
+            return view('transportfee.theory.index', compact('fees', 'type', 'students'));
         });
     });
     Route::prefix('/driving')->group(function () {

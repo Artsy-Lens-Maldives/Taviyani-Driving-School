@@ -4,6 +4,7 @@ use App\Category;
 use App\Time;
 use App\Slot;
 use App\Student;
+use App\Transportfee;
 use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
@@ -57,5 +58,25 @@ Route::prefix('/table')->group(function () {
         $times = Time::with('slots')->with('slots.student')->with('slots.student.category')->get();
 
         return view('table.index', compact('instructors', 'times'));
+    });
+});
+
+Route::prefix('/transport-fee')->group(function () {
+    Route::prefix('/theory')->group(function () {
+        Route::get('/', function () {
+            $fees = Transportfee::where('type', 'theory')->get();
+            $type = 'Theory Fees';
+            return view('transportfee.theory.index', compact('fees', 'type'));
+        });
+    });
+    Route::prefix('/driving')->group(function () {
+        Route::get('/', function () {
+            return view('transportfee.driving.index');
+        });
+    });
+    Route::prefix('/license')->group(function () {
+        Route::get('/', function () {
+            return view('transportfee.license.index');
+        });
     });
 });

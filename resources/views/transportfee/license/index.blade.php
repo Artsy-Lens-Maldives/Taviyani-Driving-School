@@ -5,7 +5,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h3>{{ $fee->type }}</h3>
+                <h3>{{ $type }}</h3>
             </div>
             <div class="col-md-12">
                 <table>
@@ -19,21 +19,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>{{ $fee->student->name }}</td>
-                            <td>{{ $fee->paid }}</td>
-                            <td>{{ $fee->remaining }}</td>
-                            <td>{{ $fee->status }}</td>
-                            <td>
-                                <a href="" class="btn btn-danger">Delete</a>
-                                <a href="" class="btn btn-warning">Edit</a>
-                                @if ($fee->paid - $fee->remaining == 0)
-                                    <a href="" class="btn btn-success">Paid</a>
-                                @else
-                                    <a href="" class="btn btn-info">Recive Payment</a>
-                                @endif
-                            </td>
-                        </tr>
+                        @foreach ($fees as $fee)
+                            <tr>
+                                <td>{{ $fee->student->name }}</td>
+                                <td>{{ $fee->paid }}</td>
+                                <td>{{ $fee->remaining }}</td>
+                                <td>{{ $fee->status }}</td>
+                                <td>
+                                    <a href="" class="btn btn-danger">Delete</a>
+                                    <a href="" class="btn btn-warning">Edit</a>
+                                    @if ($fee->paid - $fee->remaining == 0)
+                                        <a href="" class="btn btn-success">Paid</a>
+                                    @else
+                                        <a href="" class="btn btn-info">Recive Payment</a>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

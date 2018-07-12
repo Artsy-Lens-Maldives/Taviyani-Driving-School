@@ -83,4 +83,5 @@
         autoclose: true,
     });
 </script>
+
 @endsection

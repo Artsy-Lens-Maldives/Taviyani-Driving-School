@@ -55,23 +55,51 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="POST">
+                    <form action="{{ url()->current() }}" method="POST">
                         <div class="form-group">
                             <label>Select Student</label>
-                            <select class="form-control">
+                            <select name="student_id" class="form-control">
                                 @foreach ($students as $student)
-                                    <option>{{ $student->name }} - {{ $student->phone }}</option>
+                                    <option value="{{ $student->id }}">{{ $student->name }} - {{ $student->phone }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <?php
+                                $now = \Carbon\Carbon::now();
+                            ?>
+                            <label for="date">Date</label>
+                            <input type='text' class="form-control datepicker" value="{{ $now->format('d/m/Y') }}" name="date" id="dob" />
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <label>Rate</label>
+                            <input type="number" class="form-control" name="rate" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Paid</label>
+                            <input type="number" class="form-control" name="paid">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary">Add</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
+
+@endsection
+
+@section('js')
+
+<script type="text/javascript">
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy',
+        endDate: '-18y',
+        autoclose: true,
+    });
+</script>
 
 @endsection

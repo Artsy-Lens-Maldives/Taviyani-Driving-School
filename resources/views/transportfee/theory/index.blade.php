@@ -55,7 +55,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ url()->current() }}" method="POST">
+                    <form id="feeForm" action="{{ url()->current() }}" method="POST">
                         <div class="form-group">
                             <label>Select Student</label>
                             <select name="student_id" class="form-control">
@@ -90,7 +90,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Add</button>
+                    <input form="feeForm" type="submit" class="btn btn-primary">Add</input>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>

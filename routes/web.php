@@ -78,8 +78,9 @@ Route::prefix('/transport-fee')->group(function () {
                 'date' => $request->date,
                 'paid' => $request->paid,
                 'total' => $request->rate,
+                'status' => $request->status
             ]);
-
+            
             return redirect('/transport-fee/theory');
         });
     });

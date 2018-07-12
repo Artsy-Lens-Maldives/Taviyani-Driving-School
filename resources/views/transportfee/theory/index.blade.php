@@ -80,6 +80,13 @@
                             <label>Paid</label>
                             <input type="number" class="form-control" name="paid">
                         </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select name="status" class="form-control">
+                                <option>Slip taken</option>
+                                <option>Slip not taken</option>
+                            </select>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">

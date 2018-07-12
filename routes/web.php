@@ -70,14 +70,38 @@ Route::prefix('/transport-fee')->group(function () {
             $students = Student::all();
             return view('transportfee.theory.index', compact('fees', 'type', 'students'));
         });
+
+        Route::get('/post', function (Request $request) {
+            $fee = Transportfee::create([
+                'student_id' => $request->student_id,
+                'type' => 'theory',
+                'date' => $request->date,
+                'paid' => $request->paid,
+                'total' => $request->rate,
+            ]);
+
+            return redirect('/transport-fee/theory');
+        });
     });
+
+    // ------------------------------- //
     Route::prefix('/driving')->group(function () {
         Route::get('/', function () {
+            $fees = Transportfee::where('type', 'driving')->get();
+            $type = 'Theory Fees';
+
+            $students = Student::all();
             return view('transportfee.driving.index');
         });
     });
+
+    // ------------------------------- //
     Route::prefix('/license')->group(function () {
         Route::get('/', function () {
+            $fees = Transportfee::where('type', 'license')->get();
+            $type = 'Theory Fees';
+
+            $students = Student::all();
             return view('transportfee.license.index');
         });
     });

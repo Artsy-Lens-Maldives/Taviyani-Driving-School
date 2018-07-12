@@ -19,7 +19,7 @@ class CreateTransportfeesTable extends Migration
             $table->string('type')->nullable();
             $table->string('date')->nullable();
             $table->string('paid')->nullable();
-            $table->string('remaining')->nullable();
+            $table->string('total')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
         });

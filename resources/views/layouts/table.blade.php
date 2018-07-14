@@ -32,13 +32,50 @@
     <!-- Styles -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/litera/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.min.css" />
+
+    <link href="/css/typeaheadjs.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-colvis-1.5.1/b-flash-1.5.2/b-html5-1.5.2/b-print-1.5.2/r-2.2.2/datatables.min.css"/>
     @yield('css')
 </head>
 <body>
     @include('partials.header')
     
     <div class="wrap" style="padding-top: 50px; padding-bottom: 100px;">
-        @yield('content')
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row" style="margin-bottom: 10px;">
+                        <h3 style="margin-right: 10px;">@yield('title')</h3>
+                        <button data-toggle="modal" data-target="#feeAddModel" class="btn btn-success">Add</button>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <table id="example" class="table table-bordered">
+                        @yield('table')
+                    </table>
+                </div>
+            </div>
+        </div>
+    
+        <div class="modal" id="feeAddModel" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document" style="width:100%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add @yield('title')</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @yield('model-body')
+                    </div>
+                    <div class="modal-footer">
+                        <input form="feeForm" type="submit" class="btn btn-primary"></input>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -48,6 +85,11 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
 
+    <script src="/js/typeahead.bundle.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-colvis-1.5.1/b-flash-1.5.2/b-html5-1.5.2/b-print-1.5.2/r-2.2.2/datatables.min.js"></script>
     @yield('js')
 </body>
 </html>

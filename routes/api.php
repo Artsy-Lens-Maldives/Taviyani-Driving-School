@@ -1,10 +1,13 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Instructor;
 use App\Category;
 use App\Time;
-use App\Instructor;
 use App\Slot;
+use App\Student;
+use App\Transportfee;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,4 +38,8 @@ Route::get('/free-times/{id}', function($id) {
     foreach ($slots as $slot) {
         echo "<option value='". $slot->time->id ."'>". $slot->time->time ."</option>";
     }
+});
+
+Route::get('/student/names', function(){
+    return Student::pluck('name');
 });

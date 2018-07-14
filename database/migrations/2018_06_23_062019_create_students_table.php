@@ -28,6 +28,12 @@ class CreateStudentsTable extends Migration
             $table->string('license_no')->nullable();
             $table->string('theory_count')->default('0')->nullable();
             $table->string('driving_count')->default('0')->nullable();
+            
+            $table->string('rate')->nullable();
+            $table->string('remarks')->nullable();
+            $table->string('finished_at')->nullable();
+            $table->string('license_url')->nullable();
+            $table->string('form_url')->nullable();
             $table->timestamps();
         });
     }

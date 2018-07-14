@@ -52,6 +52,13 @@ Route::prefix('/student')->group(function () {
     Route::post('/create/step-3/{id}', 'StudentController@create_step_3_store');
 });
 
+Route::prefix('/instructor')->group(function (){
+    Route::get('/', function() {
+        $instructors = Instructor::with('categories')->withCount('categories')->get();
+        return view('instructor.view', compact('instructors'));
+    });
+});
+
 Route::get('/categories-pivot', 'CategoryController@create_pivot_from_comma_table');
 
 Route::prefix('/table')->group(function () {

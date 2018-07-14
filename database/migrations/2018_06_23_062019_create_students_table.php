@@ -26,6 +26,8 @@ class CreateStudentsTable extends Migration
             $table->string('dateofbirth')->nullable();
             $table->string('gender')->nullable();
             $table->string('license_no')->nullable();
+            $table->string('theory_count')->default('0')->nullable();
+            $table->string('driving_count')->default('0')->nullable();
             $table->timestamps();
         });
     }

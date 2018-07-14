@@ -15,9 +15,11 @@
                     <thead>
                         <tr>
                             <th>Student Name</th>
+                            <th>Attempts</th>
                             <th>Paid</th>
                             <th>Remaining</th>
                             <th>Status</th>
+                            <th>Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -25,16 +27,21 @@
                         @foreach ($fees as $fee)
                             <tr>
                                 <td>{{ $fee->student->name }}</td>
+                                <td>{{ $fee->student->theory_count }}</td>
                                 <td>{{ $fee->paid }}</td>
-                                <td>{{ $fee->remaining }}</td>
+                                <td>{{ $fee->total - $fee->paid }}</td>
                                 <td>{{ $fee->status }}</td>
+                                <td>{{ $fee->date->format('d/m/Y') }}</td>
                                 <td>
                                     <a href="" class="btn btn-danger">Delete</a>
                                     <a href="" class="btn btn-warning">Edit</a>
-                                    @if ($fee->paid - $fee->remaining == 0)
-                                        <a href="" class="btn btn-success">Paid</a>
+                                    @if ($fee->total - $fee->paid == 0)
+                                        <a href="" class="btn btn-success disabled" disabled>Paid fully</a>
                                     @else
                                         <a href="" class="btn btn-info">Recive Payment</a>
+                                    @endif
+                                    @if (!$fee->date->isPast())
+                                        <a href="" class="btn btn-secondary">Send Reminder</a>
                                     @endif
                                 </td>
                             </tr>
@@ -55,7 +62,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="feeForm" action="{{ url()->current() }}" method="POST">
+                    <form id="feeForm" action="{{ url()->current() }}/post" method="POST">
+                        @csrf
                         <div class="form-group">
                             <label>Select Student</label>
                             <select name="student_id" class="form-control">
@@ -90,7 +98,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <input form="feeForm" type="submit" class="btn btn-primary">Add</input>
+                    <input form="feeForm" type="submit" class="btn btn-primary"></input>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -104,7 +112,6 @@
 <script type="text/javascript">
     $('.datepicker').datepicker({
         format: 'dd/mm/yyyy',
-        endDate: '-18y',
         autoclose: true,
     });
 </script>

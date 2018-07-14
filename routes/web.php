@@ -6,6 +6,8 @@ use App\Slot;
 use App\Student;
 use App\Transportfee;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -64,22 +66,29 @@ Route::prefix('/table')->group(function () {
 Route::prefix('/transport-fee')->group(function () {
     Route::prefix('/theory')->group(function () {
         Route::get('/', function () {
-            $fees = Transportfee::where('type', 'theory')->get();
+            $fees = Transportfee::where('type', 'theory')->with('student')->get();
             $type = 'Theory Fees';
 
             $students = Student::all();
+            
             return view('transportfee.theory.index', compact('fees', 'type', 'students'));
         });
 
-        Route::get('/post', function (Request $request) {
+        Route::post('/post', function (Request $request) {
             $fee = Transportfee::create([
                 'student_id' => $request->student_id,
                 'type' => 'theory',
-                'date' => $request->date,
                 'paid' => $request->paid,
                 'total' => $request->rate,
                 'status' => $request->status
             ]);
+
+            $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+            $fee->save();
+
+            $student = Student::findOrFail($request->student_id);
+            $student->theory_count += 1;
+            $student->save();
             
             return redirect('/transport-fee/theory');
         });

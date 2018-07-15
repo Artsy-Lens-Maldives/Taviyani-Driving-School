@@ -13,7 +13,7 @@
             <th>Slip Number</th>
             <th>Registered Date</th>
             <th>Registered By</th>
-            <th>Action</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -36,14 +36,13 @@
                         <a class="btn btn-warning">Unassigned</a>
                     @endif
                 </td>
-                <td>TDS/{{ date("Y") }}/{{ date("m") }}/{{ $student->id }}</td>
-                <td>{{ $student->created_at->toFormattedDateString() }}</td>
+                <td>TDS/{{ $student->created_at->format("Y") }}/{{ $student->created_at->format("m") }}/{{ $student->id }}</td>
+                <td>{{ $student->created_at->format('d/m/Y') }}</td>
                 <td>-</td>
                 <td>
-                    <a class="btn btn-danger" style="margin: 1px">Delete</a>
-                    <a class="btn btn-warning" style="margin: 1px">Edit</a>
-                    <a class="btn btn-success" style="margin: 1px">Recipt</a>
-                    <a class="btn btn-info" style="margin: 1px">Assign</a>
+                    <a class="btn btn-danger" style="margin: 1px"><i class="fas fa-trash"></i>                    </a>
+                    <a class="btn btn-warning" style="margin: 1px"><i class="fas fa-edit"></i>                    </a>
+                    <a class="btn btn-success" style="margin: 1px"><i class="fas fa-receipt"></i></a>
                 </td>
             </tr>
         @endforeach
@@ -53,7 +52,20 @@
 @section('js')
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#example').DataTable();
+            $.fn.dataTable.moment( 'D/M/YYYY' );
+
+            $('#example').DataTable({
+                responsive: true,
+                "autoWidth": false,
+                "order": [7, 'desc'],
+                dom: 'Bfrtip',
+                buttons: [
+                    'print',
+                    'excel',
+                    'pdf',
+                    'colvis'
+                ]
+            });
         });
     </script>
 @endsection

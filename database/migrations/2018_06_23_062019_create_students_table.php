@@ -17,6 +17,8 @@ class CreateStudentsTable extends Migration
             $table->increments('id');
             $table->string('vehicle_id')->nullable();
             $table->string('category_id')->nullable();
+            $table->string('user_id')->nullable();
+            
             $table->string('photo_url')->nullable();
             $table->string('name')->nullable();
             $table->string('id_card')->nullable();
@@ -34,6 +36,9 @@ class CreateStudentsTable extends Migration
             $table->string('finished_at')->nullable();
             $table->string('license_url')->nullable();
             $table->string('form_url')->nullable();
+
+            $table->string('month')->nullable();
+            $table->string('year')->nullable();
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@
 
                     You are logged in!
 
-                    <a href="/table">View Table</a>
+                    <a href="/home">Back to XYZ</a>
                 </div>
             </div>
         </div>

@@ -50,6 +50,17 @@ Route::prefix('/student')->group(function () {
 
     Route::get('/create/step-3/{id}', 'StudentController@create_step_3');
     Route::post('/create/step-3/{id}', 'StudentController@create_step_3_store');
+
+    Route::get('/fix-created-at', function() {
+        $students = Student::all();
+
+        foreach ($students as $student) {
+            // echo $student->created_at;
+            $student->created_at = Carbon::createFromFormat('d-m-y G:i', $student->created_at_old)->toDateTimeString();
+            $student->updated_at = Carbon::createFromFormat('d-m-y G:i', $student->updated_at_old)->toDateTimeString();
+            $student->save();
+        }
+    });
 });
 
 Route::prefix('/instructor')->group(function (){

@@ -93,18 +93,25 @@ Route::prefix('/transport-fee')->group(function () {
         });
 
         Route::post('/post', function (Request $request) {
+            // return $request;
+            $student = Student::where('name', $request->student)->first();
+
             $fee = Transportfee::create([
-                'student_id' => $request->student_id,
+                'student_id' => $student->id,
                 'type' => 'theory',
                 'paid' => $request->paid,
-                'total' => $request->rate,
-                'status' => $request->status
+                'total' => $request->rate
             ]);
 
-            $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
-            $fee->save();
+            if ($request->slipTaken == '1') {
+                $fee->slipTaken = 1;
+            }
 
-            $student = Student::findOrFail($request->student_id);
+            if ($fee->date !== NULL) {
+                $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+                $fee->save();
+            }
+
             $student->theory_count += 1;
             $student->save();
             
@@ -119,7 +126,33 @@ Route::prefix('/transport-fee')->group(function () {
             $type = 'Theory Fees';
 
             $students = Student::all();
-            return view('transportfee.driving.index');
+            return view('transportfee.driving.index', compact('fees'));
+        });
+
+        Route::post('/post', function (Request $request) {
+            // return $request;
+            $student = Student::where('name', $request->student)->first();
+
+            $fee = Transportfee::create([
+                'student_id' => $student->id,
+                'type' => 'driving',
+                'paid' => $request->paid,
+                'total' => $request->rate
+            ]);
+
+            if ($request->slipTaken == '1') {
+                $fee->slipTaken = 1;
+            }
+
+            if ($fee->date !== NULL) {
+                $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+                $fee->save();
+            }
+
+            $student->driving_count += 1;
+            $student->save();
+            
+            return redirect('/transport-fee/driving');
         });
     });
 
@@ -130,7 +163,26 @@ Route::prefix('/transport-fee')->group(function () {
             $type = 'Theory Fees';
 
             $students = Student::all();
-            return view('transportfee.license.index');
+            return view('transportfee.license.index', compact('fees'));
+        });
+
+        Route::post('/post', function (Request $request) {
+            // return $request;
+            $student = Student::where('name', $request->student)->first();
+
+            $fee = Transportfee::create([
+                'student_id' => $student->id,
+                'type' => 'license',
+                'paid' => $request->paid,
+                'total' => $request->rate
+            ]);
+            
+            if ($fee->date !== NULL) {
+                $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+                $fee->save();
+            }
+            
+            return redirect('/transport-fee/license');
         });
     });
 });

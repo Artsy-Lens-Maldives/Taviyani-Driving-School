@@ -1,6 +1,10 @@
 @extends('layouts.table')
 
-@section('title', 'Theory Fee')
+@section('title', 'Theory test Fee')
+
+@section('button')
+    <button data-toggle="modal" data-target="#feeAddModel" class="btn btn-success" style="margin-left: 10px">Add Slip</button>
+@endsection
 
 @section('table')
     <thead>
@@ -9,7 +13,7 @@
             <th>Attempts</th>
             <th>Paid</th>
             <th>Remaining</th>
-            <th>Status</th>
+            <th>Slip taken</th>
             <th>Date</th>
             <th>Actions</th>
         </tr>
@@ -19,10 +23,28 @@
             <tr>
                 <td>{{ $fee->student->name }}</td>
                 <td>{{ $fee->student->theory_count }}</td>
-                <td>{{ $fee->paid }}</td>
+                <td>
+                    @if ($fee->paid > 0)
+                        {{ $fee->paid }}
+                    @else
+                        0
+                    @endif
+                </td>
                 <td>{{ $fee->total - $fee->paid }}</td>
-                <td>{{ $fee->status }}</td>
-                <td>{{ $fee->date->format('d/m/Y') }}</td>
+                <td>
+                    @if ($fee->slipTaken == 1)
+                        <a class="btn btn-success">Slip Taken</a>
+                    @else
+                        <a class="btn btn-warning">Slip not Taken</a>
+                    @endif
+                </td>
+                <td>
+                    @if ($fee->date !== NULL)
+                        {{ $fee->date->format('d/m/Y') }}
+                    @else
+                        -
+                    @endif
+                </td>
                 <td>
                     <a href="" class="btn btn-danger">Delete</a>
                     <a href="" class="btn btn-warning">Edit</a>
@@ -31,8 +53,10 @@
                     @else
                         <a href="" class="btn btn-info">Recive Payment</a>
                     @endif
-                    @if (!$fee->date->isPast())
-                        <a href="" class="btn btn-secondary">Send Reminder</a>
+                    @if ($fee->date !== NULL)
+                        @if (!$fee->date->isPast())
+                            <a href="" class="btn btn-secondary">Send Reminder</a>
+                        @endif
                     @endif
                 </td>
             </tr>
@@ -48,14 +72,6 @@
             <input type="text" class="form-control typeahead" name="student" placeholder="Enter student name">
         </div>
         <div class="form-group">
-            <?php
-                $now = \Carbon\Carbon::now();
-            ?>
-            <label for="date">Date</label>
-            <input type='text' class="form-control datepicker" value="{{ $now->format('d/m/Y') }}" name="date" id="dob" />
-        </div>
-        <hr>
-        <div class="form-group">
             <label>Rate</label>
             <input type="number" class="form-control" name="rate" value="100">
         </div>
@@ -63,12 +79,21 @@
             <label>Paid</label>
             <input type="number" class="form-control" name="paid">
         </div>
-        <div class="form-group">
-            <label>Status</label>
-            <select name="status" class="form-control">
-                <option>Slip taken</option>
-                <option>Slip not taken</option>
-            </select>
+        <hr>
+        <div class="form-check">
+            <input class="form-check-input" name="slipTaken" type="checkbox" value="1" id="defaultCheck1" onchange="showSlipTaken()">
+            <label class="form-check-label" for="defaultCheck1">
+                Slip Taken
+            </label>
+        </div>
+        <div id="slipTaken">
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type='text' class="form-control datepicker" name="date" id="date" />
+                <small id="dateHelpBlock" class="form-text text-muted">
+                    Enter date slip was taken from the ministry
+                </small>
+            </div>
         </div>
     </form>
 @endsection
@@ -92,7 +117,31 @@
         });
 
         $(document).ready(function() {
+            $( "#slipTaken" ).hide();
             $('#example').DataTable();
+
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
         });
+
+        function showSlipTaken() {
+            var d = new Date();
+            var month = d.getMonth()+1;
+            var day = d.getDate();
+
+            var output = (day<10 ? '0' : '') + day + '/' + (month<10 ? '0' : '') + month + '/' + d.getFullYear()
+
+            if ($('#defaultCheck1').is(":checked")) {
+                $( "#slipTaken" ).show( "slow" );
+                $("#date").val(output);
+            } else {
+                $( "#slipTaken" ).hide( "slow" );
+                $("#date").val(null);
+            }
+        };
     </script>
 @endsection

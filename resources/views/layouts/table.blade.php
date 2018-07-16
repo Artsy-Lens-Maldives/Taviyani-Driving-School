@@ -47,7 +47,7 @@
                 <div class="col-md-12">
                     <div class="row ml-1 mb-1">
                         <h3 class="mr-1">@yield('title')</h3>
-                        <button data-toggle="modal" data-target="#feeAddModel" class="btn btn-success">Add</button>
+                        @yield('button')
                     </div>
                 </div>
                 <div class="col-md-12">

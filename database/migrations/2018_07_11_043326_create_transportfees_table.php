@@ -21,6 +21,7 @@ class CreateTransportfeesTable extends Migration
             $table->string('paid')->nullable();
             $table->string('total')->nullable();
             $table->string('status')->nullable();
+            $table->integer('slipTaken')->default('0')->nullable();
             $table->timestamps();
         });
     }

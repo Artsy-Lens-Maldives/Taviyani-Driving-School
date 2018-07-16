@@ -1,105 +1,150 @@
-@extends('layouts.app')
+@extends('layouts.table')
 
-@section('content')
+@section('title', 'Driving Test Fee')
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="row" style="margin-bottom: 10px;">
-                    <h3 style="margin-right: 10px;">Driving Fee</h3>
-                    <button data-toggle="modal" data-target="#feeAddModel" class="btn btn-success">Add</button>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Paid</th>
-                            <th>Remaining</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($fees as $fee)
-                            <tr>
-                                <td>{{ $fee->student->name }}</td>
-                                <td>{{ $fee->paid }}</td>
-                                <td>{{ $fee->remaining }}</td>
-                                <td>{{ $fee->status }}</td>
-                                <td>
-                                    <a href="" class="btn btn-danger">Delete</a>
-                                    <a href="" class="btn btn-warning">Edit</a>
-                                    @if ($fee->paid - $fee->remaining == 0)
-                                        <a href="" class="btn btn-success">Paid</a>
-                                    @else
-                                        <a href="" class="btn btn-info">Recive Payment</a>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+@section('button')
+    <button data-toggle="modal" data-target="#feeAddModel" class="btn btn-success" style="margin-left: 10px">Add Slip</button>
+@endsection
+
+@section('table')
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            <th>Attempts</th>
+            <th>Paid</th>
+            <th>Remaining</th>
+            <th>Slip taken</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($fees as $fee)
+            <tr>
+                <td>{{ $fee->student->name }}</td>
+                <td>{{ $fee->student->driving_count }}</td>
+                <td>
+                    @if ($fee->paid > 0)
+                        {{ $fee->paid }}
+                    @else
+                        0
+                    @endif
+                </td>
+                <td>{{ $fee->total - $fee->paid }}</td>
+                <td>
+                    @if ($fee->slipTaken == 1)
+                        <a class="btn btn-success">Slip Taken</a>
+                    @else
+                        <a class="btn btn-warning">Slip not Taken</a>
+                    @endif
+                </td>
+                <td>
+                    @if ($fee->date !== NULL)
+                        {{ $fee->date->format('d/m/Y') }}
+                    @else
+                        -
+                    @endif
+                </td>
+                <td>
+                    <a href="" class="btn btn-danger">Delete</a>
+                    <a href="" class="btn btn-warning">Edit</a>
+                    @if ($fee->total - $fee->paid == 0)
+                        <a href="" class="btn btn-success disabled" disabled>Paid fully</a>
+                    @else
+                        <a href="" class="btn btn-info">Recive Payment</a>
+                    @endif
+                    @if ($fee->date !== NULL)
+                        @if (!$fee->date->isPast())
+                            <a href="" class="btn btn-secondary">Send Reminder</a>
+                        @endif
+                    @endif
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+@endsection
+
+@section('model-body')
+    <form id="feeForm" action="{{ url()->current() }}/post" method="POST">
+        @csrf
+        <div id="prefetch" class="form-group">
+            <label>Select Student</label>
+            <input type="text" class="form-control typeahead" name="student" placeholder="Enter student name">
+        </div>
+        <div class="form-group">
+            <label>Rate</label>
+            <input type="number" class="form-control" name="rate" value="100">
+        </div>
+        <div class="form-group">
+            <label>Paid</label>
+            <input type="number" class="form-control" name="paid">
+            <small id="paidHelpBlock" class="form-text text-muted">
+                Enter amount paid by the customer
+            </small>
+        </div>
+        <hr>
+        <div class="form-check">
+            <input class="form-check-input" name="slipTaken" type="checkbox" value="1" id="defaultCheck1" onchange="showSlipTaken()">
+            <label class="form-check-label" for="defaultCheck1">
+                Slip Taken
+            </label>
+        </div>
+        <div id="slipTaken">
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type='text' class="form-control datepicker" name="date" id="date" />
+                <small id="dateHelpBlock" class="form-text text-muted">
+                    Enter date slip was taken from the ministry
+                </small>
             </div>
         </div>
-    </div>
-
-    <div class="modal" id="feeAddModel" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document" style="width:100%;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Driving Fee</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ url()->current() }}" method="POST">
-                        <div class="form-group">
-                            <label>Select Student</label>
-                            <select name="student_id" class="form-control">
-                                @foreach ($students as $student)
-                                    <option value="{{ $student->id }}">{{ $student->name }} - {{ $student->phone }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <?php
-                                $now = \Carbon\Carbon::now();
-                            ?>
-                            <label for="date">Date</label>
-                            <input type='text' class="form-control datepicker" value="{{ $now->format('d/m/Y') }}" name="date" id="dob" />
-                        </div>
-                        <hr>
-                        <div class="form-group">
-                            <label>Rate</label>
-                            <input type="number" class="form-control" name="rate" value="100">
-                        </div>
-                        <div class="form-group">
-                            <label>Paid</label>
-                            <input type="number" class="form-control" name="paid">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Add</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    </form>
 @endsection
 
 @section('js')
+    <script type="text/javascript">
+        $('.datepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+        });
+        
+        var students = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: '/api/student/names'
+        });
 
-<script type="text/javascript">
-    $('.datepicker').datepicker({
-        format: 'dd/mm/yyyy',
-        endDate: '-18y',
-        autoclose: true,
-    });
-</script>
+        $('#prefetch .typeahead').typeahead(null, {
+            name: 'students',
+            source: students
+        });
 
+        $(document).ready(function() {
+            $( "#slipTaken" ).hide();
+            $('#example').DataTable();
+
+            $(window).keydown(function(event){
+                if(event.keyCode == 13) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        });
+
+        function showSlipTaken() {
+            var d = new Date();
+            var month = d.getMonth()+1;
+            var day = d.getDate();
+
+            var output = (day<10 ? '0' : '') + day + '/' + (month<10 ? '0' : '') + month + '/' + d.getFullYear()
+
+            if ($('#defaultCheck1').is(":checked")) {
+                $( "#slipTaken" ).show( "slow" );
+                $("#date").val(output);
+            } else {
+                $( "#slipTaken" ).hide( "slow" );
+                $("#date").val(null);
+            }
+        };
+    </script>
 @endsection

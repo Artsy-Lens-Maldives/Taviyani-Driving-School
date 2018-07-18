@@ -22,16 +22,28 @@
         @foreach ($fees as $fee)
             <tr>
                 <td>{{ $fee->student->name }}</td>
-                <td>{{ $fee->paid }}</td>
-                <td>{{ $fee->remaining }}</td>
+                <td>
+                    @if ($fee->paid > 0)
+                        {{ $fee->paid }}
+                    @else
+                        0
+                    @endif    
+                </td>
+                <td>{{ $fee->total - $fee->paid }}</td>
                 <td>
                     @if($fee->slipTaken == 1)
-                        License
+                        <button class="btn btn-success" disabled>License Taken</button>
                     @else
                         <button class="btn btn-info">Add License</button>
                     @endif
                 </td>
-                <td>{{ $fee->date }}</td>
+                <td>
+                    @if ($fee->date !== NULL)
+                        {{ $fee->date->format('d/m/Y') }}
+                    @else
+                        -
+                    @endif
+                </td>
                 <td>{{ $fee->paid }}</td>
                 <td>
                     <a href="" class="btn btn-danger">Delete</a>
@@ -46,12 +58,12 @@
     <form id="feeForm" action="{{ url()->current() }}/post" method="POST">
         @csrf
         <div id="prefetch" class="form-group">
-            <label>Enter Student name</label>
-            <input type="text" class="form-control typeahead" name="student" placeholder="Enter student name">
+            <label>Select Student <span class="red">*</span></label>
+            <input type="text" class="form-control typeahead" name="student" placeholder="Enter student name" required>
         </div>
         <div class="form-group">
             <label>Rate</label>
-            <input type="number" class="form-control" name="rate" value="250">
+            <input type="number" class="form-control" name="rate" value="250" required>
         </div>
         <div class="form-group">
             <label>Paid</label>
@@ -70,7 +82,7 @@
         <div id="slipTaken">
             <div class="form-group">
                 <label for="date">Date</label>
-                <input type='text' class="form-control datepicker" name="date" id="date" />
+                <input type='text' class="form-control datepicker" name="date" id="date" value="" />
                 <small id="dateHelpBlock" class="form-text text-muted">
                     Enter date license was taken from the ministry
                 </small>
@@ -121,7 +133,7 @@
                 $("#date").val(output);
             } else {
                 $( "#slipTaken" ).hide( "slow" );
-                $("#date").val(null);
+                $("#date").val('');
             }
         };
     </script>

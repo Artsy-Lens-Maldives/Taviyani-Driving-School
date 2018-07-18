@@ -36,6 +36,12 @@
 
     <link href="/css/typeaheadjs.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.2/b-colvis-1.5.1/b-flash-1.5.2/b-html5-1.5.2/b-print-1.5.2/r-2.2.2/datatables.min.css"/>
+
+    <style>
+        .red {
+            color: red;
+        }
+    </style>
     @yield('css')
 </head>
 <body>

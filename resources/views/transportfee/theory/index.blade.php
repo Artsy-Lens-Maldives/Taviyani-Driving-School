@@ -14,7 +14,8 @@
             <th>Paid</th>
             <th>Remaining</th>
             <th>Slip taken</th>
-            <th>Date</th>
+            <th>Slip add date</th>
+            <th>Test date</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -33,9 +34,16 @@
                 <td>{{ $fee->total - $fee->paid }}</td>
                 <td>
                     @if ($fee->slipTaken == 1)
-                        <a class="btn btn-success">Slip Taken</a>
+                        <button class="btn btn-success" disabled>Slip Taken</button>
                     @else
                         <a class="btn btn-warning">Slip not Taken</a>
+                    @endif
+                </td>
+                <td>
+                    @if ($fee->created_at !== NULL)
+                        {{ $fee->created_at->format('d/m/Y') }}
+                    @else
+                        -
                     @endif
                 </td>
                 <td>
@@ -68,12 +76,12 @@
     <form id="feeForm" action="{{ url()->current() }}/post" method="POST">
         @csrf
         <div id="prefetch" class="form-group">
-            <label>Select Student</label>
-            <input type="text" class="form-control typeahead" name="student" placeholder="Enter student name">
+            <label>Select Student <span class="red">*</span></label>
+            <input type="text" class="form-control typeahead" name="student" placeholder="Enter student name" required>
         </div>
         <div class="form-group">
             <label>Rate</label>
-            <input type="number" class="form-control" name="rate" value="100">
+            <input type="number" class="form-control" name="rate" value="100" required>
         </div>
         <div class="form-group">
             <label>Paid</label>
@@ -89,9 +97,9 @@
         <div id="slipTaken">
             <div class="form-group">
                 <label for="date">Date</label>
-                <input type='text' class="form-control datepicker" name="date" id="date" />
+                <input type='text' class="form-control datepicker" name="date" id="date" value="" />
                 <small id="dateHelpBlock" class="form-text text-muted">
-                    Enter date slip was taken from the ministry
+                    Enter date of the test
                 </small>
             </div>
         </div>
@@ -140,7 +148,7 @@
                 $("#date").val(output);
             } else {
                 $( "#slipTaken" ).hide( "slow" );
-                $("#date").val(null);
+                $("#date").val('');
             }
         };
     </script>

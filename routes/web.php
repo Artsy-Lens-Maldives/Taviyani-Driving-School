@@ -105,9 +105,10 @@ Route::prefix('/transport-fee')->group(function () {
 
             if ($request->slipTaken == '1') {
                 $fee->slipTaken = 1;
+                $fee->save();
             }
 
-            if ($fee->date !== NULL) {
+            if ($request->has('date')) {
                 $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
                 $fee->save();
             }
@@ -142,9 +143,10 @@ Route::prefix('/transport-fee')->group(function () {
 
             if ($request->slipTaken == '1') {
                 $fee->slipTaken = 1;
+                $fee->save();
             }
 
-            if ($fee->date !== NULL) {
+            if ($request->has('date')) {
                 $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
                 $fee->save();
             }
@@ -176,8 +178,13 @@ Route::prefix('/transport-fee')->group(function () {
                 'paid' => $request->paid,
                 'total' => $request->rate
             ]);
+
+            if ($request->slipTaken == '1') {
+                $fee->slipTaken = 1;
+                $fee->save();
+            }
             
-            if ($fee->date !== NULL) {
+            if ($request->has('date')) {
                 $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
                 $fee->save();
             }

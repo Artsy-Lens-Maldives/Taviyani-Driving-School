@@ -2,6 +2,10 @@
 
 @section('title', 'Instructors')
 
+@section('button')
+    <a href="{{ url('instructor/create') }}" class="btn btn-success" style="margin-left: 10px">Add a Insrtuctor</a>
+@endsection
+
 @section('table')
     <thead>
         <tr>

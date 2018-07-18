@@ -68,6 +68,10 @@ Route::prefix('/instructor')->group(function (){
         $instructors = Instructor::with('categories')->withCount('categories')->get();
         return view('instructor.view', compact('instructors'));
     });
+
+    Route::get('create', function (){
+        return view('instructor.create');
+    });
 });
 
 Route::get('/categories-pivot', 'CategoryController@create_pivot_from_comma_table');

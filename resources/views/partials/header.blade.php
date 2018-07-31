@@ -49,6 +49,15 @@
                     <a class="dropdown-item" href="{{ url('/transport-fee/license') }}">License Fee</a>
                 </div>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Users
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{ url('/users') }}">View all</a>
+                    <a class="dropdown-item" href="{{ url('/users/create') }}">Add new</a>
+                </div>
+            </li>
         </ul>
     </div>
 </nav>

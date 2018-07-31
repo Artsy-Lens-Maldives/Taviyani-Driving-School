@@ -5,6 +5,7 @@ use App\Time;
 use App\Slot;
 use App\Student;
 use App\Transportfee;
+use App\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -40,6 +41,29 @@ Route::prefix('/slot')->group(function () {
 Route::prefix('/student')->group(function () {
     Route::get('/', 'StudentController@index');
 
+    Route::post('/assign-student', function(Request $request) {
+        // $instructor = Instructor::findOrFail($request->instructor_id);
+        // $student = Student::findOrFail($request->student_id);
+        // $time = Time::findOrFail($request->time);
+
+        $slot = Slot::where('instructor_id', $request->instructor_id)
+                      ->where('time_id', $request->time_id)
+                      ->where('IsEmpty', '1')
+                      ->first();
+
+        // return $slot;
+
+        if ($slot !== null) {
+            $slot->student_id = $request->student_id;
+            $slot->isEmpty = '0';
+            $slot->save();
+            return redirect('table');
+        } else {
+            return redirect('student');
+        }
+
+    });
+
     Route::get('/create', 'StudentController@create_step_1_redirect');
 
     Route::get('/create/step-1', 'StudentController@create_step_1');
@@ -66,7 +90,40 @@ Route::prefix('/student')->group(function () {
 Route::prefix('/instructor')->group(function (){
     Route::get('/', function() {
         $instructors = Instructor::with('categories')->withCount('categories')->get();
-        return view('instructor.view', compact('instructors'));
+        $students = Student::get();
+
+        $students->filter(function ($value, $key) {
+            $student_ids = Slot::where('student_id', '!=', '0')->pluck('student_id')->toArray();
+
+            foreach ($student_ids as $id) {
+                if ($id !== $value) {
+                    return $value;
+                }
+            }
+        });
+
+        return view('instructor.view', compact('instructors', 'students'));
+    });
+
+    Route::post('/assign-student', function(Request $request) {
+        // $instructor = Instructor::findOrFail($request->instructor_id);
+        // $student = Student::findOrFail($request->student);
+        // $time = Time::findOrFail($request->time);
+
+        $slot = Slot::where('instructor_id', $request->instructor_id)
+                      ->where('time_id', $request->time_id)
+                      ->where('IsEmpty', '1')
+                      ->first();
+
+        if ($slot !== null) {
+            $slot->student_id = $request->student_id;
+            $slot->isEmpty = '0';
+            $slot->save();
+            return redirect('table');
+        } else {
+            return redirect('instructor');
+        }
+
     });
 
     Route::get('create', function (){
@@ -195,5 +252,20 @@ Route::prefix('/transport-fee')->group(function () {
             
             return redirect('/transport-fee/license');
         });
+    });
+});
+
+Route::prefix('/users')->group(function () {
+    Route::get('/', function () {
+        $users = User::all();
+
+        return view('user.index', compact('users'));
+    });
+    Route::post('/assign-role', function (Request $request) {
+        $user = User::findOrFail($request->user_id);
+        $user->assignRole($request->role);
+        $user->save();
+
+        return redirect('/users');
     });
 });

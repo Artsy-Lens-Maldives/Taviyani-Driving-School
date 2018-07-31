@@ -14,8 +14,9 @@ class StudentController extends Controller
     public function index()
     {
         $students = Student::with('category')->with('slot')->with('slot.instructor')->get();
+        $instructors = Instructor::all();
         // return $students;
-        return view('student.view', compact('students'));
+        return view('student.view', compact('students', 'instructors'));
     }
 
     public function create_step_1_redirect()

@@ -119,6 +119,8 @@
             prefetch: '/api/student/names'
         });
 
+        console.log(students);
+
         $('#prefetch .typeahead').typeahead(null, {
             name: 'students',
             source: students

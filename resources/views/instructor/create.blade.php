@@ -74,7 +74,15 @@
                             </div>
                         </div>
                         <hr>
-                        
+                        @foreach ($categories as $category)
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="category" value="{{ $category->id }}">
+                                <label class="form-check-label" for="exampleRadios1">
+                                    {{ $category->code }} - {{ $category->name }} - Price: (add price column)
+                                </label>
+                            </div>
+                        @endforeach
+                        <hr>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>

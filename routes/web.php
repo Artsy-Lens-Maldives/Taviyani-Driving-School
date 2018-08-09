@@ -8,6 +8,7 @@ use App\Transportfee;
 use App\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,7 +128,8 @@ Route::prefix('/instructor')->group(function (){
     });
 
     Route::get('create', function (){
-        return view('instructor.create');
+        $categories = Category::all();
+        return view('instructor.create', compact('categories'));
     });
 });
 
@@ -261,6 +263,15 @@ Route::prefix('/users')->group(function () {
 
         return view('user.index', compact('users'));
     });
+
+    Route::get('create-roles', function() {
+        $role = Role::create([
+            'name' => 'student',
+            'name' => 'instructor',
+            'name' => 'admin'
+        ]);
+    });
+
     Route::post('/assign-role', function (Request $request) {
         $user = User::findOrFail($request->user_id);
         $user->assignRole($request->role);

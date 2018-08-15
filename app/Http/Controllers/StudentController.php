@@ -87,4 +87,26 @@ class StudentController extends Controller
 
         return redirect('/');
     }
+
+    public function assignStudent(Request $request) {
+        // $instructor = Instructor::findOrFail($request->instructor_id);
+        // $student = Student::findOrFail($request->student_id);
+        // $time = Time::findOrFail($request->time);
+
+        $slot = Slot::where('instructor_id', $request->instructor_id)
+                      ->where('time_id', $request->time_id)
+                      ->where('IsEmpty', '1')
+                      ->first();
+
+        // return $slot;
+
+        if ($slot !== null) {
+            $slot->student_id = $request->student_id;
+            $slot->isEmpty = '0';
+            $slot->save();
+            return redirect('table');
+        } else {
+            return redirect('student');
+        }
+    }
 }

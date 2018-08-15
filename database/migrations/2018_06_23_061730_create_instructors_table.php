@@ -15,6 +15,7 @@ class CreateInstructorsTable extends Migration
     {
         Schema::create('instructors', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('location_id')->nullable();
             $table->string('category_id')->nullable();
             $table->string('photo_url')->default('/user.png')->nullable();
             $table->string('name')->nullable();

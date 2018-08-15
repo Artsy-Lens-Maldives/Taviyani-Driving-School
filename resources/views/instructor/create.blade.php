@@ -5,11 +5,10 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Add a Instructor</div>
-
                 <div class="card-body">
                     <form method="POST" action="{{ url()->current() }}">
                         @csrf
+                        <h4>Your Details</h4>
                         <div class="form-group">
                             <label for="name">Full Name</label>
                             <input type="text" class="form-control" name="name" id="name" placeholder="Mohamed Ahmed">
@@ -60,6 +59,7 @@
                             </div>
                         </div>
                         <hr>
+                        <h4>License Info</h4>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="license_no">License No</label>
@@ -74,14 +74,27 @@
                             </div>
                         </div>
                         <hr>
+                        <h4>Select the categories</h4>
                         @foreach ($categories as $category)
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="category" value="{{ $category->id }}">
-                                <label class="form-check-label" for="exampleRadios1">
-                                    {{ $category->code }} - {{ $category->name }} - Price: (add price column)
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="category[]" value="{{ $category->id }}">
+                                <label class="form-check-label">
+                                    {{ $category->code }} - {{ $category->name }}
                                 </label>
                             </div>
                         @endforeach
+                        <hr>
+                        <h4>Login Details</h4>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="email@taviyani.com.mv">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="password">Password</label>
+                                <input type="text" class="form-control" name="pass" id="password" placeholder="enter password">
+                            </div>
+                        </div>
                         <hr>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>

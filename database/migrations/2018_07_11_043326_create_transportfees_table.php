@@ -16,6 +16,7 @@ class CreateTransportfeesTable extends Migration
         Schema::create('transportfees', function (Blueprint $table) {
             $table->increments('id');
             $table->string('student_id')->nullable();
+            $table->string('location_id')->nullable();
             $table->string('type')->nullable();
             $table->string('date')->nullable();
             $table->string('paid')->nullable();

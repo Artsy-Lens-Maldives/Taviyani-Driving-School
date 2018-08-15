@@ -1,27 +1,21 @@
 @extends('layouts.table')
 
-@section('title', 'Instructors')
+@section('title', 'Vehicles')
 
 @section('table')
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Phone Number</th>
+            <th>Number</th>
             <th>Category</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        @foreach($instructors as $instructor)
-        
+        @foreach($vehicles as $vehicle)
+    
         <tr>
-            <td>{{ $instructor->name }}</td>
-            <td>{{ $instructor->phone_number }}</td>
-            <td>
-                @foreach($instructor->categories as $category)
-                    {{ $category->code }}
-                @endforeach
-            </td>
+            <td>{{ $vehicle->number }}</td>
+            <td>{{ $vehicle->category->code }} - {{ $vehicle->category->name }}</td>
             <td>
                 <a class="btn btn-danger" style="margin: 1px">Delete</a>
                 <a class="btn btn-warning" style="margin: 1px">Edit</a>

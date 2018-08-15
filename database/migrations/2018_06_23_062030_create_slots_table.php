@@ -15,6 +15,7 @@ class CreateSlotsTable extends Migration
     {
         Schema::create('slots', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('location_id')->nullable();
             $table->string('instructor_id')->default('0')->nullable();
             $table->string('time_id')->default('0')->nullable();
             $table->string('student_id')->default('0')->nullable();

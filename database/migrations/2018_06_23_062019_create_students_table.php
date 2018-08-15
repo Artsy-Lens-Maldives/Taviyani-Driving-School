@@ -18,7 +18,8 @@ class CreateStudentsTable extends Migration
             $table->string('vehicle_id')->nullable();
             $table->string('category_id')->nullable();
             $table->string('user_id')->nullable();
-            
+            $table->string('location_id')->nullable();
+
             $table->string('photo_url')->nullable();
             $table->string('name')->nullable();
             $table->string('id_card')->nullable();

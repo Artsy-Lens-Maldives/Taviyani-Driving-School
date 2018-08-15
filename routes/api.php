@@ -43,3 +43,7 @@ Route::get('/free-times/{id}', function($id) {
 Route::get('/student/names', function(){
     return Student::pluck('name');
 });
+
+Route::get('/slip-info/{id}', function($id){
+    return Transportfee::where('id', $id)->with('student')->first();
+});

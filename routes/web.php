@@ -6,6 +6,7 @@ use App\Slot;
 use App\Student;
 use App\Transportfee;
 use App\User;
+use App\Vehicle;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
@@ -39,31 +40,20 @@ Route::prefix('/slot')->group(function () {
     Route::get('/switch/{id}/{new_id}/{student_id}', 'SlotController@switch_students_slot');
 });
 
+
+Route::prefix('/table')->group(function () {
+    Route::get('/', function () {
+        $instructors = Instructor::with('slots')->with('categories')->get();
+        $times = Time::with('slots')->with('slots.student')->with('slots.student.category')->get();
+
+        return view('table.index', compact('instructors', 'times'));
+    });
+});
+
 Route::prefix('/student')->group(function () {
     Route::get('/', 'StudentController@index');
 
-    Route::post('/assign-student', function(Request $request) {
-        // $instructor = Instructor::findOrFail($request->instructor_id);
-        // $student = Student::findOrFail($request->student_id);
-        // $time = Time::findOrFail($request->time);
-
-        $slot = Slot::where('instructor_id', $request->instructor_id)
-                      ->where('time_id', $request->time_id)
-                      ->where('IsEmpty', '1')
-                      ->first();
-
-        // return $slot;
-
-        if ($slot !== null) {
-            $slot->student_id = $request->student_id;
-            $slot->isEmpty = '0';
-            $slot->save();
-            return redirect('table');
-        } else {
-            return redirect('student');
-        }
-
-    });
+    Route::post('/assign-student', 'StudentController@assignStudent');
 
     Route::get('/create', 'StudentController@create_step_1_redirect');
 
@@ -77,6 +67,8 @@ Route::prefix('/student')->group(function () {
     Route::post('/create/step-3/{id}', 'StudentController@create_step_3_store');
 
     Route::get('/fix-created-at', function() {
+        // Run this code to fix created_at after playing with it in excel
+
         $students = Student::all();
 
         foreach ($students as $student) {
@@ -131,16 +123,47 @@ Route::prefix('/instructor')->group(function (){
         $categories = Category::all();
         return view('instructor.create', compact('categories'));
     });
-});
 
+    Route::post('create', function (Request $request){
+        // TODO: Fill this
+        $instructor = Instructor::create([
+            'name' => $request->name,
+            'idcardno' => $request->idcardno,
+            'phone' => $request->phone,
+            'p_address' => $request->p_address,
+            'c_address' => $request->c_address,
+            'dob' => $request->dob,
+            'gender' => $request->gender,
+            'license_no' => $request->license_no,
+            'license_expiry' => $request->license_expiry,
+            'category' => $request->category,
+        ]);
+
+        $user = User::create([
+            'email' => $request->email,
+            'password' => $request->pass
+        ]);
+    });
+});
 Route::get('/categories-pivot', 'CategoryController@create_pivot_from_comma_table');
 
-Route::prefix('/table')->group(function () {
+Route::prefix('/vehicle')->group(function () {
     Route::get('/', function () {
-        $instructors = Instructor::with('slots')->with('categories')->get();
-        $times = Time::with('slots')->with('slots.student')->with('slots.student.category')->get();
+        $vehicles = Vehicle::all();
+        return view('vehicle.view', compact('vehicles'));
+    });
 
-        return view('table.index', compact('instructors', 'times'));
+    Route::get('/create', function () {
+        $categories  = Category::all();
+        return view('vehicle.create', compact('categories'));
+    });
+
+    Route::post('/create', function (Request $request) {
+        $vehicle = Vehicle::create([
+            'number' => $request->number,
+            'category_id' => $request->category
+        ]);
+        return redirect('vehicle');
     });
 });
 

@@ -25,6 +25,6 @@ class RolesTableSeeder extends Seeder
                 "guard_name" => "web"
             ]
         ];
-        DB::table('locations')->insert($data);
+        DB::table('roles')->insert($data);
     }
 }

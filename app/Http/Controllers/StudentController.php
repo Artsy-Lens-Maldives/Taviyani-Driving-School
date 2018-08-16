@@ -7,6 +7,7 @@ use App\Category;
 use App\Time;
 use App\Slot;
 use App\Student;
+use App\Location;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -50,7 +51,8 @@ class StudentController extends Controller
     {
         $student = Student::findOrFail($id);
         $categories = Category::all();
-        return view('student.create-2', compact('student', 'categories'));
+        $locations = Location::all();
+        return view('student.create-2', compact('student', 'categories', 'locations'));
     }
 
     public function create_step_2_store($id, Request $request)
@@ -59,6 +61,7 @@ class StudentController extends Controller
 
         $student = Student::findOrFail($id);
         $student->category_id = $request->category;
+        $student->location_id = $request->location_id;
         $student->save();
 
         $url = 'student/create/step-3/'.$student->id;
@@ -69,7 +72,11 @@ class StudentController extends Controller
     {
         $student = Student::findOrFail($id);
         $category = Category::find($student->category_id);
-        $instructors = $category->instructors;
+        $instructors = $category->instructors();
+        dd($instructors);
+        $instructors->where('location_id', $student->location_id)->get();
+
+
 
         return view('student.create-3', compact('student', 'instructors'));
     }

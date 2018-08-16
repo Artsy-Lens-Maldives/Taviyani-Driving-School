@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <form method="POST" action="{{ url()->current() }}">
                         @csrf
-                        <h4>Your Details</h4>
+                        <h4>Add Instructor</h4>
                         <div class="form-group">
                             <label for="name">Full Name</label>
                             <input type="text" class="form-control" name="name" id="name" placeholder="Mohamed Ahmed">
@@ -48,7 +48,7 @@
                                     $now->subYears(18);
                                 ?>
                                 <label for="dob">Date of Birth</label>
-                                <input type='text' class="form-control datepicker" value="{{ $now->format('d/m/Y') }}" name="dateofbirth" id="dob" />
+                                <input type='text' class="form-control dob-datepicker" value="{{ $now->format('d/m/Y') }}" name="dob" id="dob" />
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="gender">Gender</label>
@@ -57,6 +57,15 @@
                                     <option value="male">Male</option>
                                 </select>
                             </div>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                            <label>Select Location</label>
+                            <select class="form-control" name="location_id">
+                                @foreach ($locations as $location)
+                                    <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <hr>
                         <h4>License Info</h4>
@@ -88,11 +97,11 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="email">Email</label>
-                                <input type="email" class="form-control" name="email" id="email" placeholder="email@taviyani.com.mv">
+                                <input type="email" class="form-control" name="email" id="email" placeholder="email@taviyani.com.mv" value="@taviyani.com.mv">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="password">Password</label>
-                                <input type="text" class="form-control" name="pass" id="password" placeholder="enter password">
+                                <input type="text" class="form-control" name="pass" id="password" placeholder="enter password" value="Welcome123">
                             </div>
                         </div>
                         <hr>
@@ -108,9 +117,13 @@
 @section('js')
 
 <script type="text/javascript">
-    $('.datepicker').datepicker({
+    $('.dob-datepicker').datepicker({
         format: 'dd/mm/yyyy',
         endDate: '-18y',
+        autoclose: true,
+    });
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy',
         autoclose: true,
     });
 </script>

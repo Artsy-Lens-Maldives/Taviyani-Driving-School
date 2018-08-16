@@ -12,6 +12,7 @@
             <th>Name</th>
             <th>Phone Number</th>
             <th>Category</th>
+            <th>Location</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -20,12 +21,13 @@
         
         <tr>
             <td>{{ $instructor->name }}</td>
-            <td>{{ $instructor->phone_number }}</td>
+            <td>{{ $instructor->phone }}</td>
             <td>
                 @foreach($instructor->categories as $category)
                     {{ $category->code }}
                 @endforeach
             </td>
+            <td>{{ $instructor->location->name }}</td>
             <td>
                 <a class="btn btn-danger" style="margin: 1px">Delete</a>
                 <a class="btn btn-warning" style="margin: 1px">Edit</a>

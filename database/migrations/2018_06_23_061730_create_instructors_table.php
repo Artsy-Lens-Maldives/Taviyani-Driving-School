@@ -17,9 +17,23 @@ class CreateInstructorsTable extends Migration
             $table->increments('id');
             $table->string('location_id')->nullable();
             $table->string('category_id')->nullable();
+            $table->string('user_id')->nullable();
+            
             $table->string('photo_url')->default('/user.png')->nullable();
+
+            $table->string('category')->nullable();
+            
             $table->string('name')->nullable();
-            $table->string('phone_number')->nullable();
+            $table->string('idcardno')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('p_address')->nullable();
+            $table->string('c_address')->nullable();
+            $table->string('dob')->nullable();
+            $table->string('gender')->nullable();
+
+            $table->string('license_no')->nullable();
+            $table->string('license_expiry')->nullable();
+            
             $table->timestamps();
         });
     }

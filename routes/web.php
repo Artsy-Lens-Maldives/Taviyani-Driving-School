@@ -7,7 +7,9 @@ use App\Student;
 use App\Transportfee;
 use App\User;
 use App\Vehicle;
+use App\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
 
@@ -121,12 +123,21 @@ Route::prefix('/instructor')->group(function (){
 
     Route::get('create', function (){
         $categories = Category::all();
-        return view('instructor.create', compact('categories'));
+        $locations = Location::all();
+        return view('instructor.create', compact('categories', 'locations'));
     });
 
     Route::post('create', function (Request $request){
         // TODO: Fill this
+
+        // dd($request->category);
+        if ($request->category) {
+            $arr = $request->category;
+            $str = implode(",", $arr);
+        }
+
         $instructor = Instructor::create([
+            'location_id' => $request->location_id,
             'name' => $request->name,
             'idcardno' => $request->idcardno,
             'phone' => $request->phone,
@@ -136,16 +147,26 @@ Route::prefix('/instructor')->group(function (){
             'gender' => $request->gender,
             'license_no' => $request->license_no,
             'license_expiry' => $request->license_expiry,
-            'category' => $request->category,
+            'category' => $str,
         ]);
 
         $user = User::create([
+            'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->pass
+            'password' => Hash::make($request->pass)
         ]);
+
+        $user->assignRole('instructor');
+        $user->save();
+
+        $instructor->user_id = $user->id;
+        $instructor->save();
+
+        return redirect('/instructor/categories-pivot');
     });
+    Route::get('/categories-pivot', 'CategoryController@create_pivot_from_comma_table');
 });
-Route::get('/categories-pivot', 'CategoryController@create_pivot_from_comma_table');
+
 
 Route::prefix('/vehicle')->group(function () {
     Route::get('/', function () {

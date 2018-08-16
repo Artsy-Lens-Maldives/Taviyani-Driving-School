@@ -11,7 +11,7 @@
                     @foreach($instructors as $instructor)
                     
                     <th>
-                        {{ $instructor->name }} - {{ $instructor->phone_number }}
+                        {{ $instructor->name }} - {{ $instructor->phone }}
                         <br>
                         (@foreach ($instructor->categories as $category)
                             {{ $category->code }}

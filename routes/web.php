@@ -62,11 +62,11 @@ Route::prefix('/student')->group(function () {
     Route::get('/create/step-1', 'StudentController@create_step_1');
     Route::post('/create/step-1', 'StudentController@create_step_1_store');
 
-    Route::get('/create/step-2/{id}', 'StudentController@create_step_2');
-    Route::post('/create/step-2/{id}', 'StudentController@create_step_2_store');
+    Route::get('/create/step-4/{id}', 'StudentController@create_step_2');
+    Route::post('/create/step-4/{id}', 'StudentController@create_step_2_store');
 
-    Route::get('/create/step-3/{id}', 'StudentController@create_step_3');
-    Route::post('/create/step-3/{id}', 'StudentController@create_step_3_store');
+    Route::get('/create/step-2/{id}', 'StudentController@create_step_3');
+    Route::post('/create/step-2/{id}', 'StudentController@create_step_3_store');
 
     Route::get('/fix-created-at', function() {
         // Run this code to fix created_at after playing with it in excel
@@ -124,7 +124,8 @@ Route::prefix('/instructor')->group(function (){
     Route::get('create', function (){
         $categories = Category::all();
         $locations = Location::all();
-        return view('instructor.create', compact('categories', 'locations'));
+        $times = Time::all();
+        return view('instructor.create', compact('categories', 'locations', 'times'));
     });
 
     Route::post('create', function (Request $request){
@@ -136,26 +137,34 @@ Route::prefix('/instructor')->group(function (){
             $str = implode(",", $arr);
         }
 
-        $instructor = Instructor::create([
-            'location_id' => $request->location_id,
-            'name' => $request->name,
-            'idcardno' => $request->idcardno,
-            'phone' => $request->phone,
-            'p_address' => $request->p_address,
-            'c_address' => $request->c_address,
-            'dob' => $request->dob,
-            'gender' => $request->gender,
-            'license_no' => $request->license_no,
-            'license_expiry' => $request->license_expiry,
-            'category' => $str,
-        ]);
+        try {
+            $instructor = Instructor::create([
+                'location_id' => $request->location_id,
+                'name' => $request->firstname . " " . $request->lastname,
+                'idcardno' => $request->idcardno,
+                'phone' => $request->phone,
+                'p_address' => $request->p_address,
+                'c_address' => $request->c_address,
+                'dob' => $request->dob,
+                'gender' => $request->gender,
+                'license_no' => $request->license_no,
+                'license_expiry' => $request->license_expiry,
+                'category' => $str,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('alert-danger', $e->getMessage());
+        }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->pass)
-        ]);
-
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->pass)
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('alert-danger', $e->getMessage());
+        }
+        
         $user->assignRole('instructor');
         $user->save();
 
@@ -163,16 +172,18 @@ Route::prefix('/instructor')->group(function (){
         $instructor->save();
 
         // Slot creation
-        $times = Time::all();
+        if ($request->time) {
+            $arr1 = $request->time;
 
-        foreach ($times as $time) {
-            $checkSlot = Slot::where('instructor_id', $instructor->id)->where('time_id', $time->id)->first();
-
-            if ($checkSlot == null) {
-                $slot = new Slot;
-                $slot->instructor_id = $instructor->id;
-                $slot->time_id = $time->id;
-                $slot->save();
+            foreach ($arr1 as $id) {
+                $checkSlot = Slot::where('instructor_id', $instructor->id)->where('time_id', $id)->first();
+    
+                if ($checkSlot == null) {
+                    $slot = new Slot;
+                    $slot->instructor_id = $instructor->id;
+                    $slot->time_id = $id;
+                    $slot->save();
+                }
             }
         }
 
@@ -332,7 +343,7 @@ Route::prefix('/users')->group(function () {
 
     Route::post('/assign-role', function (Request $request) {
         $user = User::findOrFail($request->user_id);
-        $user->assignRole($request->role);
+        $user->syncRoles($request->role);
         $user->save();
 
         return redirect('/users');

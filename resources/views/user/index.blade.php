@@ -1,6 +1,6 @@
 @extends('layouts.table')
 
-@section('title', 'Instructors')
+@section('title', 'Users')
 
 @section('button')
     <a href="#" class="btn btn-success" style="margin-left: 10px">Add new User</a>
@@ -21,7 +21,7 @@
         <tr>
             <td>{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
-            <td>{{ $user->getRoleNames }}</td>
+            <td>{{ $user->getRoleNames() }}</td>
             <td>
                 <a class="btn btn-danger" style="margin: 1px">Delete</a>
                 <a class="btn btn-warning" style="margin: 1px">Edit</a>

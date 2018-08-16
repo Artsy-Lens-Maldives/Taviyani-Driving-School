@@ -8,56 +8,65 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/table" target="_blank">View Table</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Students
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ url('/student') }}">View all</a>
-                    <a class="dropdown-item" href="{{ url('/student/create') }}">Add new</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Instructors
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ url('/instructor') }}">View all</a>
-                    <a class="dropdown-item" href="{{ url('/instructor/create') }}">Add new</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Vehicles
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ url('/vehicle') }}">View all</a>
-                    <a class="dropdown-item" href="{{ url('/vehicle/create') }}">Add new</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Transport Fees
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ url('/transport-fee/theory') }}">Theory Test</a>
-                    <a class="dropdown-item" href="{{ url('/transport-fee/driving') }}">Driving Test</a>
-                    <a class="dropdown-item" href="{{ url('/transport-fee/license') }}">License Fee</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Users
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ url('/users') }}">View all</a>
-                    <a class="dropdown-item" href="{{ url('/users/create') }}">Add new</a>
-                </div>
-            </li>
-        </ul>
+        @if (Auth::guest())
+            <li class="disabled"><a href="#">Not Logged In</a></li>
+        @else
+            <ul class="navbar-nav mr-auto">
+                @role('student')
+                    <li class="disabled"><a href="#">Student Login</a></li>
+                @endrole
+                @role('admin|instructor')
+                <li class="nav-item">
+                    <a class="nav-link" href="/table" target="_blank">View Table</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Students
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url('/student') }}">View all</a>
+                        <a class="dropdown-item" href="{{ url('/student/create') }}">Add new</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Instructors
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url('/instructor') }}">View all</a>
+                        <a class="dropdown-item" href="{{ url('/instructor/create') }}">Add new</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Vehicles
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url('/vehicle') }}">View all</a>
+                        <a class="dropdown-item" href="{{ url('/vehicle/create') }}">Add new</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Transport Fees
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url('/transport-fee/theory') }}">Theory Test</a>
+                        <a class="dropdown-item" href="{{ url('/transport-fee/driving') }}">Driving Test</a>
+                        <a class="dropdown-item" href="{{ url('/transport-fee/license') }}">License Fee</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Users
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ url('/users') }}">View all</a>
+                        <a class="dropdown-item" href="{{ url('/users/create') }}">Add new</a>
+                    </div>
+                </li>
+                @endrole
+            </ul>
+        @endif
     </div>
 </nav>

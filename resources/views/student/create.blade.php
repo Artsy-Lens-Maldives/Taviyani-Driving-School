@@ -9,6 +9,7 @@
 
                     <div class="card-body">
                         <form method="POST" action="{{ url()->current() }}">
+                            <h4>Student Detail</h4>
                             @csrf
                             <div class="form-group">
                                 <label for="name">Full Name</label>
@@ -65,6 +66,26 @@
                                     <input type="text" class="form-control" id="license_no" placeholder="AXXXXXX">
                                 </div>
                             </div>
+                            <hr>
+                            <h4>Category and Location</h4>
+                            @foreach ($categories as $category)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="category" value="{{ $category->id }}">
+                                    <label class="form-check-label" for="exampleRadios1">
+                                        {{ $category->code }} - {{ $category->name }} - Price: {{ $category->rate }}
+                                    </label>
+                                </div>
+                            @endforeach
+                            <br>
+                            <div class="form-group">
+                                <label>Select Location</label>
+                                <select class="form-control" name="location_id">
+                                    @foreach ($locations as $location)
+                                        <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <hr>
                             <button type="submit" class="btn btn-primary">Next Step</button>
                         </form>
                     </div>

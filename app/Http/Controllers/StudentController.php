@@ -27,7 +27,10 @@ class StudentController extends Controller
 
     public function create_step_1()
     {
-        return view('student.create');
+        $categories = Category::all();
+        $locations = Location::all();
+
+        return view('student.create', compact('categories', 'locations'));
     }
 
     public function create_step_1_store(Request $request)
@@ -40,44 +43,41 @@ class StudentController extends Controller
             'c_address' => $request->c_address,
             'dateofbirth' => $request->dateofbirth,
             'gender' => $request->gender,
-            'license_no' => $request->license_no
+            'license_no' => $request->license_no,
+            'category_id' => $request->category_id,
+            'location_id' => $request->location_id
         ]);
 
         $url = 'student/create/step-2/'.$student->id;
         return redirect($url);
     }
 
-    public function create_step_2($id)
-    {
-        $student = Student::findOrFail($id);
-        $categories = Category::all();
-        $locations = Location::all();
-        return view('student.create-2', compact('student', 'categories', 'locations'));
-    }
+    // public function create_step_2($id)
+    // {
+    //     $student = Student::findOrFail($id);
+    //     $categories = Category::all();
+    //     $locations = Location::all();
+    //     return view('student.create-2', compact('student', 'categories', 'locations'));
+    // }
 
-    public function create_step_2_store($id, Request $request)
-    {
-        // dd($request->category);
+    // public function create_step_2_store($id, Request $request)
+    // {
+    //     // dd($request->category);
 
-        $student = Student::findOrFail($id);
-        $student->category_id = $request->category;
-        $student->location_id = $request->location_id;
-        $student->save();
+    //     $student = Student::findOrFail($id);
+    //     $student->category_id = $request->category;
+    //     $student->location_id = $request->location_id;
+    //     $student->save();
 
-        $url = 'student/create/step-3/'.$student->id;
-        return redirect($url);
-    }
+    //     $url = 'student/create/step-3/'.$student->id;
+    //     return redirect($url);
+    // }
 
     public function create_step_3($id)
     {
         $student = Student::findOrFail($id);
-        $category = Category::find($student->category_id);
-        $instructors = $category->instructors();
-        dd($instructors);
-        $instructors->where('location_id', $student->location_id)->get();
-
-
-
+        $instructors = Category::find($student->category_id)->instructors()->where('location_id', $student->location_id)->get();
+        
         return view('student.create-3', compact('student', 'instructors'));
     }
 

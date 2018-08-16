@@ -162,6 +162,20 @@ Route::prefix('/instructor')->group(function (){
         $instructor->user_id = $user->id;
         $instructor->save();
 
+        // Slot creation
+        $times = Time::all();
+
+        foreach ($times as $time) {
+            $checkSlot = Slot::where('instructor_id', $instructor->id)->where('time_id', $time->id)->first();
+
+            if ($checkSlot == null) {
+                $slot = new Slot;
+                $slot->instructor_id = $instructor->id;
+                $slot->time_id = $time->id;
+                $slot->save();
+            }
+        }
+
         return redirect('/instructor/categories-pivot');
     });
     Route::get('/categories-pivot', 'CategoryController@create_pivot_from_comma_table');

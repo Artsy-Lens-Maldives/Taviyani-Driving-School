@@ -44,7 +44,7 @@ class StudentController extends Controller
             'dateofbirth' => $request->dateofbirth,
             'gender' => $request->gender,
             'license_no' => $request->license_no,
-            'category_id' => $request->category_id,
+            'category_id' => $request->category,
             'location_id' => $request->location_id
         ]);
 

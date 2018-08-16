@@ -157,11 +157,12 @@ Route::prefix('/instructor')->group(function (){
 
         try {
             $user = User::create([
-                'name' => $request->name,
+                'name' => $instructor->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->pass)
             ]);
         } catch (\Exception $e) {
+            $instructor->delete();
             return redirect()->back()->withInput()->with('alert-danger', $e->getMessage());
         }
         

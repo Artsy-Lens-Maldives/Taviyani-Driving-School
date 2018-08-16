@@ -26,6 +26,7 @@
                         </div>
                         
                         <button type="submit" class="btn btn-primary">Finish</button>
+                        <a href="{{ url('/student') }}" class="btn btn-info">Assign time later</a>
                     </form>
                 </div>
             </div>

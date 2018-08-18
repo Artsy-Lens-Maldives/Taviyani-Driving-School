@@ -6,6 +6,7 @@ use App\Time;
 use App\Slot;
 use App\Student;
 use App\Transportfee;
+use App\TempStudent;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -28,8 +29,17 @@ Route::get('/categories', function() {
     return Category::all();
 });
 
-Route::get('/category-instructor/{id}', function($id) {
-    return Category::where('id', $id)->with('instructors')->first();
+Route::get('/category-instructor/{category_id}/{location_id}', function($category_id, $location_id) {
+    return Instructor::where('location_id', $location_id)->get();
+    return Instructor::where('location_id', $location_id)->whereHas('category', function($q) {
+        $q->where('id', $category_id);
+    })->get();
+});
+
+Route::get('/instructor/free-times/{id}', function($id) {
+    $slots = Slot::where('isEmpty', '1')->where('instructor_id', $id)->with('time')->get();
+    
+    return $slots;
 });
 
 Route::get('/free-times/{id}', function($id) {
@@ -46,4 +56,35 @@ Route::get('/student/names', function(){
 
 Route::get('/slip-info/{id}', function($id){
     return Transportfee::where('id', $id)->with('student')->first();
+});
+
+Route::post('/student/post', function(Request $request) {
+    $student = TempStudent::create([
+        'name' => $request->name,
+        'id_card' => $request->idcardno,
+        'phone' => $request->phone,
+        'p_address' => $request->p_address,
+        'c_address' => $request->c_address,
+        'dateofbirth' => $request->dateofbirth,
+        'gender' => $request->gender,
+        'category_id' => $request->category_id,
+        'location_id' => $request->location_id
+    ]);
+    
+    $datas = [
+        'student_id' => $student->id,
+        'category_id' => $student->category_id,
+        'location_id' => $student->location_id
+    ];
+
+    return $datas;
+});
+
+Route::post('/student/step-2/post', function(Request $request) {
+    $student = TempStudent::findOrFail($request->student_id);
+    $student->instructor_id = $request->instructor_id;
+    $student->time_id = $request->time_id;
+    $student->save();
+
+    return $student;
 });

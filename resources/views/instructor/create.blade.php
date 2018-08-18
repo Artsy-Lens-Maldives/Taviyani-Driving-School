@@ -157,8 +157,8 @@
 
     });
     function updateEmail() {
-        $firstName = $('#first_name').val().toLowerCase();
-        $lastName = $('#last_name').val().toLowerCase();
+        $firstName = $('#first_name').val().toLowerCase().replace(/\s/g, '');
+        $lastName = $('#last_name').val().toLowerCase().replace(/\s/g, '');
         $('#email').val($firstName + "." + $lastName + "@taviyani.com.mv");
         console.log($firstName + "." + $lastName + "@taviyani.com.mv");
     }

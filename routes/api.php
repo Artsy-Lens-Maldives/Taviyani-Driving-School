@@ -58,7 +58,7 @@ Route::get('/slip-info/{id}', function($id){
     return Transportfee::where('id', $id)->with('student')->first();
 });
 
-Route::get('/student/post', function(Request $request) {
+Route::post('/student/post', function(Request $request) {
     $student = TempStudent::create([
         'name' => $request->name,
         'id_card' => $request->idcardno,

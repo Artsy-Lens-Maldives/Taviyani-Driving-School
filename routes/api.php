@@ -75,7 +75,7 @@ Route::get('/student/post', function(Request $request) {
     $category_id = $student->category_id;
     $location_id = $student->location_id;
 
-    return redirect("//127.0.0.1:8000/form/step-2/{$tudent_id}/{$location_id}/{$category_id}");
+    return redirect("//127.0.0.1:8000/form/step-2/{$student_id}/{$location_id}/{$category_id}");
 });
 
 Route::post('/student/step-2/post', function(Request $request) {

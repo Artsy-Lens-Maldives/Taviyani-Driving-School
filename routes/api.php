@@ -58,7 +58,7 @@ Route::get('/slip-info/{id}', function($id){
     return Transportfee::where('id', $id)->with('student')->first();
 });
 
-Route::post('/student/post', function(Request $request) {
+Route::get('/student/post', function(Request $request) {
     $student = TempStudent::create([
         'name' => $request->name,
         'id_card' => $request->idcardno,
@@ -75,12 +75,16 @@ Route::post('/student/post', function(Request $request) {
     $category_id = $student->category_id;
     $location_id = $student->location_id;
 
-    return $student;
+    // return $student;
 
-    return redirect("//127.0.0.1:8000/driving-school/form/step-2/{$student_id}/{$location_id}/{$category_id}");
+    if (App::environment('local')) {
+        return redirect("//taviyani.test.mv/driving-school/form/step-2/{$student_id}/{$location_id}/{$category_id}");
+    } else {
+        return redirect("//taviyani.com.mv/driving-school/form/step-2/{$student_id}/{$location_id}/{$category_id}");
+    }
 });
 
-Route::post('/student/step-2/post', function(Request $request) {
+Route::get('/student/step-2/post', function(Request $request) {
     $student = TempStudent::findOrFail($request->student_id);
     $student->instructor_id = $request->instructor_id;
     $student->time_id = $request->time_id;

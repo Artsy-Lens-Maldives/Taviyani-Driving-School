@@ -214,6 +214,47 @@ Route::prefix('/vehicle')->group(function () {
     });
 });
 
+Route::prefix('/category')->group(function () {
+    Route::get('/', function () {
+        $categories = Category::all();
+        return view('category.index', compact('categories'));
+    });
+
+    Route::get('/create', function () {
+        return view('category.create');
+    });
+
+    Route::post('/create', function (Request $request) {
+        $category = Category::create([
+           'name' => $request->name,
+            'code' => $request->code,
+            'rate' => $request->rate,
+        ]);
+        return redirect('/category');
+    });
+
+    Route::get('/edit/{id}', function ($id) {
+        $category = Category::findOrFail($id);
+        return view('category.edit', compact('category'));
+    });
+
+    Route::post('/edit/{id}', function ($id, Request $request) {
+        $category = Category::findOrFail($id);
+        $category->name = $request->name;
+        $category->code = $request->code;
+        $category->rate = $request->rate;
+        $category->save();
+        return redirect('/category');
+    });
+
+    Route::get('/delete/{id}', function($id) {
+        $category = Category::findOrFail($id);
+        $category->delete();
+
+        return redirect('/category');
+    });
+});
+
 Route::prefix('/transport-fee')->group(function () {
     Route::prefix('/theory')->group(function () {
         Route::get('/', function () {

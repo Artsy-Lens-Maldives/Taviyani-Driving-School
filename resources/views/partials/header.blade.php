@@ -26,6 +26,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{ url('/student') }}">View all</a>
                         <a class="dropdown-item" href="{{ url('/student/create') }}">Add new</a>
+                        <a class="dropdown-item" href="{{ url('/student/new') }}">New Students</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">

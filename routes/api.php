@@ -90,5 +90,9 @@ Route::get('/student/step-2/post', function(Request $request) {
     $student->time_id = $request->time_id;
     $student->save();
 
-    return $student;
+    if (App::environment('local')) {
+        return redirect("//taviyani.test.mv/driving-school/success");
+    } else {
+        return redirect("//taviyani.com.mv/driving-school/success");
+    }
 });

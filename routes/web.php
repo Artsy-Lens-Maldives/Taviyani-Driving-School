@@ -5,6 +5,7 @@ use App\Time;
 use App\Slot;
 use App\Student;
 use App\Transportfee;
+use App\TempStudent;
 use App\User;
 use App\Vehicle;
 use App\Location;
@@ -80,6 +81,11 @@ Route::prefix('/student')->group(function () {
             $student->save();
         }
     });
+
+    Route::get('new', function () {
+        $students = TempStudent::all();
+        return view('student.newView', compact('students'));
+    });
 });
 
 Route::prefix('/instructor')->group(function (){
@@ -140,7 +146,7 @@ Route::prefix('/instructor')->group(function (){
         try {
             $instructor = Instructor::create([
                 'location_id' => $request->location_id,
-                'name' => $request->firstname . " " . $request->lastname,
+                'name' => $request->first_name . " " . $request->last_name,
                 'idcardno' => $request->idcardno,
                 'phone' => $request->phone,
                 'p_address' => $request->p_address,

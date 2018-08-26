@@ -17,4 +17,9 @@ class Student extends Model
     {
         return $this->hasOne('App\Slot', 'student_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

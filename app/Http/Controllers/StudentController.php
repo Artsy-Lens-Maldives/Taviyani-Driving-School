@@ -45,7 +45,8 @@ class StudentController extends Controller
             'gender' => $request->gender,
             'license_no' => $request->license_no,
             'category_id' => $request->category,
-            'location_id' => $request->location_id
+            'location_id' => $request->location_id,
+            'user_id' => \Auth::user()->id,
         ]);
 
         $url = 'student/create/step-2/'.$student->id;

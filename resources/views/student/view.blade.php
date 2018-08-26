@@ -38,7 +38,13 @@
                 </td>
                 <td>TDS/{{ $student->created_at->format("Y") }}/{{ $student->created_at->format("m") }}/{{ $student->id }}</td>
                 <td>{{ $student->created_at->format('d/m/Y') }}</td>
-                <td>-</td>
+                <td>
+                    @if ($student->user_id !== null)
+                        {{ $student->user->name }}
+                    @else
+                        -
+                    @endif
+                </td>
                 <td>
                     <center>
                         <a class="btn btn-danger" style="margin: 1px"><i class="fas fa-trash"></i></a>

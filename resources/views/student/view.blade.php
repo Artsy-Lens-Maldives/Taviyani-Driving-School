@@ -47,8 +47,8 @@
                 </td>
                 <td>
                     <center>
-                        <a class="btn btn-danger" style="margin: 1px"><i class="fas fa-trash"></i></a>
-                        <a class="btn btn-warning" style="margin: 1px"><i class="fas fa-edit"></i></a>
+                        <a href="/student/delete/{{ $student->id }}" class="btn btn-danger" style="margin: 1px" onclick="return confirm('Are you sure you would like to delete this category. This process cannot be reversed.')"><i class="fas fa-trash"></i></a>
+                        <a href="/student/edit/{{ $student->id }}" class="btn btn-warning" style="margin: 1px"><i class="fas fa-edit"></i></a>
                         @if ($student->slot == null)
                             <button onclick="updateTime({{ $student->id }})" data-toggle="modal" data-target="#feeAddModel" class="btn btn-success" style="margin: 1px"><i class="fas fa-receipt"></i></button>
                         @endif

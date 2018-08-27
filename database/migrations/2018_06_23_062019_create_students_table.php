@@ -41,6 +41,7 @@ class CreateStudentsTable extends Migration
             $table->string('month')->nullable();
             $table->string('year')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

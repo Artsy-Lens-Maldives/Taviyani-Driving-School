@@ -86,6 +86,18 @@ Route::prefix('/student')->group(function () {
         $students = TempStudent::all();
         return view('student.newView', compact('students'));
     });
+
+    Route::get('/delete/{id}', function($id) {
+        $student = Student::findOrFail($id);
+        $student->delete();
+    });
+
+    Route::get('/edit/{id}', function($id) {
+        $student = Student::findOrFail($id);
+        $categories = Category::all();
+        $locations = Location::all();
+        return view('student.edit', compact('student', 'categories', 'locations'));
+    });
 });
 
 Route::prefix('/instructor')->group(function (){

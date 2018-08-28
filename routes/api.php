@@ -29,6 +29,12 @@ Route::get('/categories', function() {
     return Category::all();
 });
 
+Route::get('/category/rate/', function(Request $request) {
+    $category = Category::where('code', $request->code)->first();
+    return $category->rate;
+});
+
+
 Route::get('/category-instructor/{category_id}/{location_id}', function($category_id, $location_id) {
     return Instructor::where('location_id', $location_id)->get();
     return Instructor::where('location_id', $location_id)->whereHas('category', function($q) {

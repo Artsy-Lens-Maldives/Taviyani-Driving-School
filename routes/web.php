@@ -356,3 +356,18 @@ Route::prefix('/users')->group(function () {
         return redirect('/users');
     });
 });
+
+Route::get('/list/{start}/{end}', function ($start, $end){
+    // dd($start, $end);
+    $data = '';
+    for ($i=$start; $i < $end; $i++) { 
+$data .= 'A' . str_pad($i, 6, '0', STR_PAD_LEFT) . '
+';
+    }
+
+    $my_file = "ids.txt";
+    unlink($my_file);
+    $handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file); //implicitly creates file
+    fwrite($handle, $data);
+    fclose($handle);
+});

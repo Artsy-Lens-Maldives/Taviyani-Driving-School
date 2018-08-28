@@ -29,7 +29,7 @@
             </td>
             <td>{{ $instructor->location->name }}</td>
             <td>
-                <a class="btn btn-danger" style="margin: 1px">Delete</a>
+                <a href="/instructor/delete/{{ $instructor->id }}" class="btn btn-danger" style="margin: 1px">Delete</a>
                 <a class="btn btn-warning" style="margin: 1px">Edit</a>
                 <button onclick="updateTime({{ $instructor->id }})" data-toggle="modal" data-target="#feeAddModel" class="btn btn-info" style="margin: 1px">Assign</button>
             </td>

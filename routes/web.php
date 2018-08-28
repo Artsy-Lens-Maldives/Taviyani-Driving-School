@@ -209,6 +209,45 @@ Route::prefix('/instructor')->group(function (){
         return redirect('/instructor/categories-pivot');
     });
     Route::get('/categories-pivot', 'CategoryController@create_pivot_from_comma_table');
+
+    Route::get('/delete/{instructor}', function(Instructor $instructor) {
+        $slots = Slot::where('instructor_id', $instructor->id)->get();
+        foreach ($slots as $slot) {
+            $slot->delete();
+        }
+        $user = User::findOrFail($instructor->user_id);
+        $user->delete();
+        $instructor->delete();
+
+    });
+
+    Route::get('/edit/{instructor}', function(Instructor $instructor) {
+        $insCategories = $instructor->categories;
+        $insSlots = $instructor->slots;
+        $categories = Category::all();
+        $locations = Location::all();
+        $times = Time::all();
+        // dd($insSlots);
+        return view('instructor.edit', compact('instructor', 'insCategories', 'insSlots','categories', 'locations', 'times'));
+    });
+
+    Route::post('/edit/{instructor}', function(Instructor $instructor, Request $request) {
+        $instructor->location_id = $request->location_id;
+        $instructor->name = $request->name;
+        $instructor->idcardno = $request->idcardno;
+        $instructor->phone = $request->phone;
+        $instructor->p_address = $request->p_address;
+        $instructor->c_address = $request->c_address;
+        $instructor->dob = $request->dob;
+        $instructor->gender = $request->gender;
+        $instructor->license_no = $request->license_no;
+        $instructor->license_expiry = $request->license_expiry;
+        $instructor->save();
+
+        $rows = \DB::table('category_instructor')->where('instructor_id', $instructor->id)->get();
+        return $rows;
+
+    });
 });
 
 

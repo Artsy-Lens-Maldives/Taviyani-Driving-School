@@ -35,6 +35,7 @@ class CreateInstructorsTable extends Migration
             $table->string('license_expiry')->nullable();
             
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

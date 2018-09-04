@@ -15,7 +15,6 @@
                     @endif
 
                     You are logged in!
-
                     <a href="/home">Back to XYZ</a>
                 </div>
             </div>

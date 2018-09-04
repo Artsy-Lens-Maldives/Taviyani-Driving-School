@@ -46,17 +46,58 @@
                     @endif
                 </td>
                 <td>
-                    <center>
-                        <a href="/student/delete/{{ $student->id }}" class="btn btn-danger" style="margin: 1px" onclick="return confirm('Are you sure you would like to delete this category. This process cannot be reversed.')"><i class="fas fa-trash"></i></a>
-                        <a href="/student/edit/{{ $student->id }}" class="btn btn-warning" style="margin: 1px"><i class="fas fa-edit"></i></a>
-                        @if ($student->slot == null)
-                            <button onclick="updateTime({{ $student->id }})" data-toggle="modal" data-target="#feeAddModel" class="btn btn-success" style="margin: 1px"><i class="fas fa-receipt"></i></button>
-                        @endif
-                    </center>
+                    <button class="btn btn-info" data-toggle="modal" data-target="#theoryTestModal" onclick="updateTheoryTable({{ $student->id }})">T</button>
+                    <button class="btn btn-info" data-toggle="modal" data-target="#drivingTestModal">D</button>
+                    <button class="btn btn-info" data-toggle="modal" data-target="#licenseModal">L</button>
+                    <a href="/student/delete/{{ $student->id }}" class="btn btn-danger" style="margin: 1px" onclick="return confirm('Are you sure you would like to delete this category. This process cannot be reversed.')"><i class="fas fa-trash"></i></a>
+                    <a href="/student/edit/{{ $student->id }}" class="btn btn-warning" style="margin: 1px"><i class="fas fa-edit"></i></a>
+                    @if ($student->slot == null)
+                        <button onclick="updateTime({{ $student->id }})" data-toggle="modal" data-target="#feeAddModel" class="btn btn-success" style="margin: 1px"><i class="fas fa-receipt"></i></button>
+                    @endif
                 </td>
             </tr>
         @endforeach
     </tbody>
+    
+
+    <div class="modal" tabindex="-1" role="dialog" id="theoryTestModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Theory Test Fees</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table>
+                        <thead>
+                            <th>Atempt</th>
+                            <th>Paid</th>
+                            <th>Remaining</th>
+                            <th>Slip Taken</th>
+                            <th>Slip Add Date</th>
+                            <th>Test Date</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span id="theoryAttempt"></span></td>
+                                <td><span id="theoryPaid"></span></td>
+                                <td><span id="theoryRemaining"></span></td>
+                                <td><span id="theorySlipTaken"></span></td>
+                                <td><span id="theorySlipAddDate"></span></td>
+                                <td><span id="theoryTestDate"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('js')
@@ -96,6 +137,10 @@
                     console.log('Updated');
                 }
             });
+        }
+
+        function updateTheoryTable() {
+
         }
     </script>
 @endsection

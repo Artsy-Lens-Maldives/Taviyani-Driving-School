@@ -102,3 +102,38 @@ Route::get('/student/step-2/post', function(Request $request) {
         return redirect("//taviyani.com.mv/driving-school/success");
     }
 });
+
+Route::get('/{type}/table/{id}', function($type, $id) {
+    $theory = Transportfee::where('student_id', $id)->where('type', $type)->orderBy('created_at', 'ASC')->get();
+
+    if ($theory->count() > 0) {
+        $table = "";
+        $i = 1;
+        foreach ($theory as $t) {
+            $remaining = $t->total - $t->paid;
+
+            $table .= "
+            <tr>
+                <td>{$i}</td>
+                <td>{$t->paid}</td>
+                <td>{$remaining}</td>
+            ";
+            if ($t->slipTaken == 0 ) {
+                $table .= "<td>No</td>";
+                $table .= "<td>-</td>";
+                $table .= "<td>-</td>";
+            } else {
+                $table .= "<td>Yes</td>";
+                $table .= "<td>{$t->created_at->format('d/m/Y h:i a')}</td>";
+                $table .= "<td>{$t->date->format('d/m/Y')}</td>";
+            }
+            $table .= "</tr>";
+
+            $i++;
+        }
+
+        return $table;
+    } else {
+        return "<tr><td colspan='6'><center>No Entries Found</center></td></tr>";
+    }
+});

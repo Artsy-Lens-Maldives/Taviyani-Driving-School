@@ -67,7 +67,7 @@
         </div>
         <div class="form-group">
             <label>Paid</label>
-            <input type="number" class="form-control" name="paid">
+            <input type="number" class="form-control" name="paid" min="0" value="0">
             <small id="paidHelpBlock" class="form-text text-muted">
                 Enter amount paid by the customer
             </small>

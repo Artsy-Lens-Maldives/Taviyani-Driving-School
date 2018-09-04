@@ -69,6 +69,8 @@
                 </div>
             </div>
         </div>
+
+        @yield('content')
     
         <div class="modal" id="feeAddModel" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document" style="width:100%;">

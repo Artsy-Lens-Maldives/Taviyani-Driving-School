@@ -40,7 +40,7 @@
                     @endif
                 </td>
                 <td>
-                    @if ($fee->created_at !== NULL)
+                        @if ($fee->slipTaken == 1)
                         {{ $fee->created_at->format('d/m/Y') }}
                     @else
                         -
@@ -120,7 +120,9 @@
         @csrf
         <div class="form-group">
             <label>Select Student <span class="red">*</span></label>
-            <input type="text" class="form-control" name="student" placeholder="Enter student name" required>
+            <div id="prefetch">
+                <input type="text" class="form-control typeahead" name="student" placeholder="Enter student name" required>
+            </div>
         </div>
         <div class="form-group">
             <label>Rate</label>
@@ -128,7 +130,10 @@
         </div>
         <div class="form-group">
             <label>Paid</label>
-            <input type="number" class="form-control" name="paid">
+            <input type="number" class="form-control" name="paid" min="0" value="0">
+            <small id="paidHelpBlock" class="form-text text-muted">
+                Enter amount paid by the customer
+            </small>
         </div>
         <hr>
         <div class="form-check">

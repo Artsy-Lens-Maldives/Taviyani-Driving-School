@@ -47,7 +47,7 @@
                 </td>
                 <td>
                     <button class="btn btn-info" data-toggle="modal" data-target="#theoryTestModal" onclick="updateTheoryTable({{ $student->id }})">T</button>
-                    <button class="btn btn-info" data-toggle="modal" data-target="#drivingTestModal">D</button>
+                    <button class="btn btn-info" data-toggle="modal" data-target="#drivingTestModal" onclick="updateDrivingTable({{ $student->id }})">D</button>
                     <button class="btn btn-info" data-toggle="modal" data-target="#licenseModal">L</button>
                     <a href="/student/delete/{{ $student->id }}" class="btn btn-danger" style="margin: 1px" onclick="return confirm('Are you sure you would like to delete this category. This process cannot be reversed.')"><i class="fas fa-trash"></i></a>
                     <a href="/student/edit/{{ $student->id }}" class="btn btn-warning" style="margin: 1px"><i class="fas fa-edit"></i></a>
@@ -58,46 +58,89 @@
             </tr>
         @endforeach
     </tbody>
-    
+@endsection
 
-    <div class="modal" tabindex="-1" role="dialog" id="theoryTestModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Theory Test Fees</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table>
-                        <thead>
-                            <th>Atempt</th>
-                            <th>Paid</th>
-                            <th>Remaining</th>
-                            <th>Slip Taken</th>
-                            <th>Slip Add Date</th>
-                            <th>Test Date</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span id="theoryAttempt"></span></td>
-                                <td><span id="theoryPaid"></span></td>
-                                <td><span id="theoryRemaining"></span></td>
-                                <td><span id="theorySlipTaken"></span></td>
-                                <td><span id="theorySlipAddDate"></span></td>
-                                <td><span id="theoryTestDate"></span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+@section('model-body')
+    <form id="feeForm" action="{{ url()->current() }}/assign-student" method="POST">
+        @csrf
+        <input type="hidden" name="student_id" id="student_id">
+        <div class="form-group">
+            <label>Instructor</label>
+            <select class="form-control" name="instructor_id" id="instructor">
+                @foreach ($instructors as $instructor)
+                    <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>    
+                @endforeach
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Select Time</label>
+            <select class="form-control" name="time_id" id="times">
+            </select>
+        </div>
+    </form>
+@endsection
+
+@section('content')
+<div class="modal" tabindex="-1" role="dialog" id="theoryTestModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Theory Test Fees</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <th>Atempt</th>
+                        <th>Paid</th>
+                        <th>Remaining</th>
+                        <th>Slip Taken</th>
+                        <th>Slip Add Date</th>
+                        <th>Test Date</th>
+                    </thead>
+                    <tbody id="theoryTable">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
 
+<div class="modal" tabindex="-1" role="dialog" id="drivingTestModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Driving Test Fees</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <th>Atempt</th>
+                        <th>Paid</th>
+                        <th>Remaining</th>
+                        <th>Slip Taken</th>
+                        <th>Slip Add Date</th>
+                        <th>Test Date</th>
+                    </thead>
+                    <tbody id="drivingTable">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
 @endsection
 
 @section('js')
@@ -139,29 +182,32 @@
             });
         }
 
-        function updateTheoryTable() {
+        function updateTheoryTable(id) {
+            console.log(id);
 
+            $.ajax({
+                type: "GET",
+                url: "/api/theory/table/" + id,
+                success: function(table) {
+                    console.log(table);
+                    $("#theoryTable").html(table);
+                    console.log("Updated Theory Table")
+                }
+            });
+        }
+
+        function updateDrivingTable(id) {
+            console.log(id);
+
+            $.ajax({
+                type: "GET",
+                url: "/api/driving/table/" + id,
+                success: function(table) {
+                    console.log(table);
+                    $("#drivingTable").html(table);
+                    console.log("Updated Driving Table")
+                }
+            });   
         }
     </script>
-@endsection
-
-
-@section('model-body')
-    <form id="feeForm" action="{{ url()->current() }}/assign-student" method="POST">
-        @csrf
-        <input type="hidden" name="student_id" id="student_id">
-        <div class="form-group">
-            <label>Instructor</label>
-            <select class="form-control" name="instructor_id" id="instructor">
-                @foreach ($instructors as $instructor)
-                    <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>    
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Select Time</label>
-            <select class="form-control" name="time_id" id="times">
-            </select>
-        </div>
-    </form>
 @endsection

@@ -336,14 +336,10 @@ Route::prefix('/transport-fee')->group(function () {
 
             if ($request->slipTaken == '1') {
                 $fee->slipTaken = 1;
-                $fee->save();
-            }
-
-            if ($request->has('date')) {
                 $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
                 $fee->save();
             }
-
+            
             $student->theory_count += 1;
             $student->save();
             

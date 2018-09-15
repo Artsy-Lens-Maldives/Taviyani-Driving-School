@@ -8,23 +8,26 @@
                     <div class="card-header">Create a student</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ url()->current() }}">
+                        <form method="POST" action="{{ url()->current() }}" onkeypress="return event.keyCode != 13;">
                             <h4>Student Detail</h4>
                             @csrf
+                            <div class="form-group">
+                                <label for="idcardno">Id Card Number</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">A</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="idcardno" id="id_card" placeholder="123456">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" type="button" onclick="getStudentInfo()">Search DB</button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="name">Full Name</label>
                                 <input type="text" class="form-control" name="name" id="name" placeholder="Mohamed Ahmed">
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="idcardno">Id Card Number</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">A</span>
-                                        </div>
-                                        <input type="text" class="form-control" name="idcardno" id="id_card" placeholder="123456">
-                                    </div>
-                                </div>
                                 <div class="form-group col-md-6">
                                     <label for="phoneno">Phone Number</label>
                                     <div class="input-group">
@@ -32,6 +35,15 @@
                                             <span class="input-group-text">+960</span>
                                         </div>
                                         <input type="text" class="form-control" name="phone" id="phoneno" placeholder="7654321">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="phoneno">Phone Number - 2</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">+960</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="phone_2" id="phoneno_2" placeholder="7654321">
                                     </div>
                                 </div>
                             </div>
@@ -103,6 +115,34 @@
             endDate: '-18y',
             autoclose: true,
         });
+    </script>
+
+    <script>
+        function getStudentInfo() {
+            var nid = $("#id_card").val();
+            console.log(nid);
+
+            $.get("/api/people/A" + nid, function(data, status){
+                console.log(data);
+                $("#name").attr('value', data.name);
+                $("#p_address").attr('value', data.atoll + '. ' + data.island + ', ' + data.house);
+                $("#dob").attr('value', data.dob);
+
+                if (data.student !== null) {
+                    $("#phoneno").attr('value', data.student.phone);
+                    $("#phoneno_2").attr('value', data.student.phone_2);
+                    $("#c_address").attr('value', data.student.c_address);
+                    if(data.student.gender == 'male') {
+                        $('#gender option[value=male]').attr('selected','selected');
+                    }
+                    if(data.student.gender == 'female') {
+                        $('#gender option[value=female]').attr('selected','selected');
+                    }
+                    $("#license_no").attr('value', data.student.license_no);
+                }
+            });
+        }
+
     </script>
 
     @endsection

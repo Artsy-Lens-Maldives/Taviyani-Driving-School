@@ -9,6 +9,7 @@ use App\Transportfee;
 use App\TempStudent;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\People;
 
 /*
 |--------------------------------------------------------------------------
@@ -136,4 +137,11 @@ Route::get('/{type}/table/{id}', function($type, $id) {
     } else {
         return "<tr><td colspan='6'><center>No Entries Found</center></td></tr>";
     }
+});
+
+Route::get('people/{nid}', function($nid){
+    $people = People::where('nid', $nid)->first();
+    $student = Student::where('id_card', $nid)->first();
+    $people->student = $student;
+    return $people;
 });

@@ -30,13 +30,17 @@
                     @endif
                 </td>
                 <td>
-                    @if ($student->slot !== NULL)
-                        {{ $student->slot->instructor->name }}
+                    @if ($student->finished_at !== NULL)
+                        Student Finished
                     @else
-                    <button onclick="updateTime({{ $student->id }})" data-toggle="modal" data-target="#feeAddModel" class="btn btn-warning" style="margin: 1px">Unassigned</button>
+                        @if ($student->slot !== NULL)
+                            {{ $student->slot->instructor->name }}
+                        @else
+                            <button onclick="updateTime({{ $student->id }})" data-toggle="modal" data-target="#feeAddModel" class="btn btn-warning" style="margin: 1px">Unassigned</button>
+                        @endif
                     @endif
                 </td>
-                <td>TDS/{{ $student->created_at->format("Y") }}/{{ $student->created_at->format("m") }}/{{ $student->id }}</td>
+                <td>{{ strtoupper($student->location->code) }}/{{ $student->created_at->format("Y") }}/{{ $student->created_at->format("m") }}/{{ $student->id }}</td>
                 <td>{{ $student->created_at->format('d/m/Y') }}</td>
                 <td>
                     @if ($student->user_id !== null)
@@ -151,7 +155,7 @@
             $('#example').DataTable({
                 responsive: true,
                 "autoWidth": false,
-                "order": [7, 'desc'],
+                "order": [6, 'desc'],
                 dom: 'Bfrtip',
                 buttons: [
                     'print',

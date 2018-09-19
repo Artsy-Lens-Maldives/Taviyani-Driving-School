@@ -24,9 +24,14 @@
                         Students
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ url('/student') }}">View all</a>
                         <a class="dropdown-item" href="{{ url('/student/create') }}">Add new</a>
-                        <a class="dropdown-item" href="{{ url('/student/new') }}">New Students</a>
+                        <hr>
+                        @foreach ($locations as $location)
+                            <a class="dropdown-item" href="{{ url('/student/'. $location->id) }}">View all ({{ $location->name }} | Ongoing)</a>
+                        @endforeach
+                        <hr>
+                        <a class="dropdown-item" href="{{ url('/student') }}">View all</a>
+                        <a class="dropdown-item" href="{{ url('/student/new') }}">Registered from site</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">

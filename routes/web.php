@@ -54,7 +54,9 @@ Route::prefix('/table')->group(function () {
 });
 
 Route::prefix('/student')->group(function () {
-    Route::get('/', 'StudentController@index');
+    Route::get('/all', 'StudentController@all');
+
+    Route::get('/{location_id}', 'StudentController@index');
 
     Route::post('/assign-student', 'StudentController@assignStudent');
 

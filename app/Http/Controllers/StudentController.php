@@ -9,12 +9,38 @@ use App\Slot;
 use App\Student;
 use App\Location;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class StudentController extends Controller
 {
-    public function index()
+    public function all()
     {
-        $students = Student::with('category')->with('slot')->with('slot.instructor')->get();
+        $students = Student::with('category')->with('slot')->with('slot.instructor')->with('location')->get();
+        $instructors = Instructor::all();
+        // return $students;
+        return view('student.view', compact('students', 'instructors'));
+    }
+
+    public function index($location_id, Request $request)
+    {
+        if ($request->start_date AND $request->end_date) {
+            $from = date($request->start_date);
+            $to = date($request->end_date);
+            // dd($from, $to);
+
+            dd(Carbon::createFromFormat($request->start_date, 'd/m/Y')->format('Y-m-d h:m:s'));
+
+            $students = Student::where('location_id', $location_id)->where('finished_at', '=', null)->whereBetween('created_at', [$from, $to])->with('category')->with('slot')->with('slot.instructor')->with('location')->get();
+            // echo 'this';
+        } else {
+            // Current Month
+            $now = Carbon::now()->format('Y-m-d h:m:s');
+            
+            // Last 3 Month
+            $month_3 = Carbon::now()->subMonth(3)->format('m');
+            // $students = Student::with('category')->with('slot')->with('slot.instructor')->with('location')->where('location_id', $location_id)->where('finished_at', '=', null)->whereBetween('created_at', [$from_three, $to_three])->get();
+        }
+        
         $instructors = Instructor::all();
         // return $students;
         return view('student.view', compact('students', 'instructors'));

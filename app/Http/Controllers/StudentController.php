@@ -13,37 +13,43 @@ use Carbon\Carbon;
 
 class StudentController extends Controller
 {
-    public function all()
+    public function all(Request $request)
     {
-        $students = Student::with('category')->with('slot')->with('slot.instructor')->with('location')->get();
+        if ($request->exists('startDate') AND $request->exists('endDate')) {
+            $fromDate = date_create_from_format('d/m/Y', $request->startDate);
+            $from = date_format($fromDate, 'Y-m-d h:m:s');
+
+            $toDate = date_create_from_format('d/m/Y', $request->endDate);
+            $to = date_format($toDate, 'Y-m-d 23:59:59');
+
+            $students = Student::whereBetween('created_at', [$from, $to])->with('category')->with('slot')->with('slot.instructor')->with('location')->get();
+        } else {
+            $students = Student::with('category')->with('slot')->with('slot.instructor')->with('location')->get();
+        }
         $instructors = Instructor::all();
-        // return $students;
-        return view('student.view', compact('students', 'instructors'));
+        $location = null;
+        
+        return view('student.view', compact('students', 'instructors', 'location'));
     }
 
-    public function index($location_id, Request $request)
+    public function ongoing($location_id, Request $request)
     {
-        if ($request->start_date AND $request->end_date) {
-            $from = date($request->start_date);
-            $to = date($request->end_date);
-            // dd($from, $to);
+        if ($request->exists('startDate') AND $request->exists('endDate')) {
+            $fromDate = date_create_from_format('d/m/Y', $request->startDate);
+            $from = date_format($fromDate, 'Y-m-d h:m:s');
 
-            dd(Carbon::createFromFormat($request->start_date, 'd/m/Y')->format('Y-m-d h:m:s'));
+            $toDate = date_create_from_format('d/m/Y', $request->endDate);
+            $to = date_format($toDate, 'Y-m-d  23:59:59');
 
-            $students = Student::where('location_id', $location_id)->where('finished_at', '=', null)->whereBetween('created_at', [$from, $to])->with('category')->with('slot')->with('slot.instructor')->with('location')->get();
-            // echo 'this';
+            $students = Student::where('refunded', '0')->where('location_id', $location_id)->where('finished_at', '=', null)->whereBetween('created_at', [$from, $to])->with('category')->with('slot')->with('slot.instructor')->with('location')->get();
         } else {
-            // Current Month
-            $now = Carbon::now()->format('Y-m-d h:m:s');
-            
-            // Last 3 Month
-            $month_3 = Carbon::now()->subMonth(3)->format('m');
-            // $students = Student::with('category')->with('slot')->with('slot.instructor')->with('location')->where('location_id', $location_id)->where('finished_at', '=', null)->whereBetween('created_at', [$from_three, $to_three])->get();
+            $students = Student::where('refunded', '0')->with('category')->with('slot')->with('slot.instructor')->with('location')->where('location_id', $location_id)->where('finished_at', '=', null)->get();
         }
         
         $instructors = Instructor::all();
         // return $students;
-        return view('student.view', compact('students', 'instructors'));
+        $location = Location::find($location_id);
+        return view('student.view', compact('students', 'instructors', 'location'));
     }
 
     public function create_step_1_redirect()
@@ -73,33 +79,14 @@ class StudentController extends Controller
             'category_id' => $request->category,
             'location_id' => $request->location_id,
             'user_id' => \Auth::user()->id,
+            'rate' => $request->rate,
+            'discount' =>$request->discount
         ]);
 
         $url = 'student/create/step-2/'.$student->id;
         return redirect($url);
     }
-
-    // public function create_step_2($id)
-    // {
-    //     $student = Student::findOrFail($id);
-    //     $categories = Category::all();
-    //     $locations = Location::all();
-    //     return view('student.create-2', compact('student', 'categories', 'locations'));
-    // }
-
-    // public function create_step_2_store($id, Request $request)
-    // {
-    //     // dd($request->category);
-
-    //     $student = Student::findOrFail($id);
-    //     $student->category_id = $request->category;
-    //     $student->location_id = $request->location_id;
-    //     $student->save();
-
-    //     $url = 'student/create/step-3/'.$student->id;
-    //     return redirect($url);
-    // }
-
+    
     public function create_step_3($id)
     {
         $student = Student::findOrFail($id);

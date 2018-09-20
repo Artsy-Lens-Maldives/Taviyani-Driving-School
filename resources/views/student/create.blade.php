@@ -79,16 +79,36 @@
                                 </div>
                             </div>
                             <hr>
-                            <h4>Category and Location</h4>
+                            <h4>Category, rate and Location</h4>
                             @foreach ($categories as $category)
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="category" value="{{ $category->id }}">
+                                    <input class="form-check-input" type="radio" name="category" value="{{ $category->id }}" onchange="updateRate({{ $category->rate }})">
                                     <label class="form-check-label" for="exampleRadios1">
                                         {{ $category->code }} - {{ $category->name }} - Price: {{ $category->rate }}
                                     </label>
                                 </div>
                             @endforeach
                             <br>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="rate">Rate</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">MVR</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="rate" id="rate" placeholder="2000">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="discount">Discount</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">MVR</span>
+                                        </div>
+                                        <input type="text" class="form-control" name="discount" id="discount" placeholder="100">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label>Select Location</label>
                                 <select class="form-control" name="location_id">
@@ -115,6 +135,10 @@
             endDate: '-18y',
             autoclose: true,
         });
+
+        function updateRate(rate) {
+            $("#rate").attr('value', rate);
+        }
     </script>
 
     <script>

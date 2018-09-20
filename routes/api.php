@@ -145,3 +145,7 @@ Route::get('people/{nid}', function($nid){
     $people->student = $student;
     return $people;
 });
+
+Route::get('people-name/{name}', function($name){
+    return Searchy::people('name')->query($name)->get();
+});

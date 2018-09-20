@@ -67,5 +67,11 @@
                 Admin
             </label>
         </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="role" id="exampleRadios2" value="office">
+            <label class="form-check-label" for="exampleRadios2">
+                Office
+            </label>
+        </div>
     </form>
 @endsection

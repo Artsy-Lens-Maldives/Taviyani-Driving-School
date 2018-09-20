@@ -1,6 +1,6 @@
 @extends('layouts.table')
 
-@section('title', 'Students')
+@section('title', 'Students registered from site')
 
 @section('table')
     <thead>

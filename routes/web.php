@@ -54,28 +54,77 @@ Route::prefix('/table')->group(function () {
 });
 
 Route::prefix('/student')->group(function () {
-    Route::get('/all', 'StudentController@all');
-
-    Route::get('/{location_id}', 'StudentController@index');
-
-    Route::post('/assign-student', 'StudentController@assignStudent');
-
+    Route::get('/', function() {
+        return redirect('/student/all');
+    });
     Route::get('/create', 'StudentController@create_step_1_redirect');
-
     Route::get('/create/step-1', 'StudentController@create_step_1');
     Route::post('/create/step-1', 'StudentController@create_step_1_store');
-
     Route::get('/create/step-4/{id}', 'StudentController@create_step_2');
     Route::post('/create/step-4/{id}', 'StudentController@create_step_2_store');
-
     Route::get('/create/step-2/{id}', 'StudentController@create_step_3');
     Route::post('/create/step-2/{id}', 'StudentController@create_step_3_store');
 
+    // --------------------------------------------- //
+    
+    Route::get('/all', 'StudentController@all');
+
+    Route::get('/ongoing/{location_id}', 'StudentController@ongoing');
+    Route::post('/assign-student', 'StudentController@assignStudent');
+
+    Route::get('/delete/{id}', function($id) {
+        $student = Student::findOrFail($id);
+        $student->delete();
+    });
+    
+    // --------------------------------------------- //s
+
+    Route::get('/edit/{id}', function($id) {
+        $student = Student::findOrFail($id);
+        $categories = Category::all();
+        $locations = Location::all();
+        return view('student.edit', compact('student', 'categories', 'locations'));
+    });
+    Route::post('/edit/{student}', function(Student $student, Request $request){
+        $student->name = $request->name;
+        $student->id_card = $request->idcardno;
+        $student->phone = $request->phone;
+        $student->p_address = $request->p_address;
+        $student->c_address = $request->c_address;
+        $student->dateofbirth = $request->dateofbirth;
+        $student->gender = $request->gender;
+        $student->license_no = $request->license_no;
+        $student->rate = $request->rate;
+        $student->discount = $request->discount;
+        $student->save();
+
+        // Old check
+        if ($student->category_id !== $request->category OR $student->location_id !== $request->location_id) {
+            $student->category_id = $request->category;
+            $student->location_id = $request->location_id;
+            $student->save();
+
+            $url = 'student/edit/step-2/'.$student->id;
+            return redirect($url);
+        } else {
+            return redirect()->back()->with('alert-success', 'Student info edited');
+        }
+    });
+
+    Route::get('refund/{student}', function(Student $student){
+        return view('student.refund', compact('student'));
+    });
+    Route::post('refund/{student}', function(Student $student){
+        $student->refunded = '1';
+        $student->save();
+        return redirect('/student/receipt/'. $student->id);
+    });
+
+    // --------------------------------------------- //
+
     Route::get('/fix-created-at', function() {
-        // Run this code to fix created_at after playing with it in excel
-
+        // Run this code to fix created_at after playing student data in excel
         $students = Student::all();
-
         foreach ($students as $student) {
             // echo $student->created_at;
             $student->created_at = Carbon::createFromFormat('d-m-y G:i', $student->created_at_old)->toDateTimeString();
@@ -84,21 +133,17 @@ Route::prefix('/student')->group(function () {
         }
     });
 
-    Route::get('new', function () {
+    Route::get('from-site/new', function () {
         $students = TempStudent::all();
         return view('student.newView', compact('students'));
     });
 
-    Route::get('/delete/{id}', function($id) {
-        $student = Student::findOrFail($id);
-        $student->delete();
-    });
+    // --------------------------------------------- //
 
-    Route::get('/edit/{id}', function($id) {
-        $student = Student::findOrFail($id);
-        $categories = Category::all();
-        $locations = Location::all();
-        return view('student.edit', compact('student', 'categories', 'locations'));
+    Route::get('/receipt/{id}', function($id){
+        $student = Student::where('id', $id)->with('category')->with('slot')->with('slot.instructor')->with('location')->first();
+
+        return view('student.receipt', compact('student'));
     });
 });
 
@@ -460,4 +505,8 @@ $data .= 'A' . str_pad($i, 6, '0', STR_PAD_LEFT) . '
     $handle = fopen($my_file, 'w') or die('Cannot open file:  '.$my_file); //implicitly creates file
     fwrite($handle, $data);
     fclose($handle);
+});
+
+Route::get('password/{password}', function($password){
+    return Hash::make($password);
 });

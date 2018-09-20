@@ -23,6 +23,10 @@ class RolesTableSeeder extends Seeder
             [
                 "name" => "instructor",
                 "guard_name" => "web"
+            ],
+            [
+                "name" => "office",
+                "guard_name" => "web"
             ]
         ];
         DB::table('roles')->insert($data);

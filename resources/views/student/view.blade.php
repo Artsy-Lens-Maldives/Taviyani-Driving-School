@@ -1,6 +1,51 @@
 @extends('layouts.table')
 
-@section('title', 'Students')
+@if ($location !== null)
+    @section('title', 'Students - ' . $location->name . ' - Ongoing')
+@else
+    @section('title', 'Students - all')
+@endif
+
+@section('above-table')
+    <hr>
+    <div class="row">
+        <div class="col">
+            <h5>Filters</h5>
+        </div>
+    </div>
+    <form class="form-inline" style="margin-bottom: 25px" method="GET" autocomplete="off">
+        <input autocomplete="false" type="text" style="display:none;">
+        <?php
+            $now = \Carbon\Carbon::now();
+            $three = \Carbon\Carbon::now()->subMonths(3);
+        ?>
+        <label style="margin-right: 5px;">Start Date </label>
+        <div class="form-group" style="margin-right: 5px;">
+            <input type='text' class="form-control datepicker" name="startDate" id="startDate"
+            @if (request()->exists('startDate'))
+                value="{{ request()->startDate }}"
+            @else
+                value="{{ $three->format('d/m/Y') }}"
+            @endif
+            >
+        </div>
+
+        <label style="margin-right: 5px;">End Date </label>
+        <div class="form-group" style="margin-right: 15px;">
+            <input type='text' class="form-control datepicker" name="endDate" id="endDate"
+            @if (request()->exists('endDate'))
+                value="{{ request()->endDate }}"
+            @else
+                value="{{ $now->format('d/m/Y') }}"
+            @endif
+            >
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+        <a href="{{ url()->current() }}" class="btn btn-info">Clear</a>
+    </form>
+    <hr>
+@endsection
 
 @section('table')
     <thead>
@@ -13,6 +58,7 @@
             <th>Slip Number</th>
             <th>Registered Date</th>
             <th>Registered By</th>
+            <th>Location</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -32,6 +78,8 @@
                 <td>
                     @if ($student->finished_at !== NULL)
                         Student Finished
+                    @elseif ($student->refunded == '1')
+                        <button class="btn btn-danger">Refunded</button>
                     @else
                         @if ($student->slot !== NULL)
                             {{ $student->slot->instructor->name }}
@@ -49,15 +97,14 @@
                         -
                     @endif
                 </td>
+                <td>{{ $student->location->name }}</td>
                 <td>
                     <button class="btn btn-info" data-toggle="modal" data-target="#theoryTestModal" onclick="updateTheoryTable({{ $student->id }})">T</button>
                     <button class="btn btn-info" data-toggle="modal" data-target="#drivingTestModal" onclick="updateDrivingTable({{ $student->id }})">D</button>
                     <button class="btn btn-info" data-toggle="modal" data-target="#licenseModal">L</button>
                     <a href="/student/delete/{{ $student->id }}" class="btn btn-danger" style="margin: 1px" onclick="return confirm('Are you sure you would like to delete this category. This process cannot be reversed.')"><i class="fas fa-trash"></i></a>
                     <a href="/student/edit/{{ $student->id }}" class="btn btn-warning" style="margin: 1px"><i class="fas fa-edit"></i></a>
-                    @if ($student->slot == null)
-                        <button onclick="updateTime({{ $student->id }})" data-toggle="modal" data-target="#feeAddModel" class="btn btn-success" style="margin: 1px"><i class="fas fa-receipt"></i></button>
-                    @endif
+                    <a href="/student/receipt/{{ $student->id }}" class="btn btn-success" style="margin: 1px"><i class="fas fa-receipt"></i></a>
                 </td>
             </tr>
         @endforeach
@@ -169,6 +216,16 @@
 
             $("#instructor").change(function() {
                 updateTime();
+            });
+
+            // Datepicker
+            $('#startDate').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+            });
+            $('#endDate').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
             });
         });
 

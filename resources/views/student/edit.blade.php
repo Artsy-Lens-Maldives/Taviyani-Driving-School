@@ -4,8 +4,19 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            <div class="flash-message">
+                @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+                    @if(Session::has('alert-' . $msg))
+
+                    <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></p>
+                    
+                    @endif
+                @endforeach
+            </div>
+        </div>
+        <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Edit Student</div>
+                <div class="card-header">Edit Student {{ ($student->refunded == '1') ? ' - REFUNDED' : '' }}</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ url()->current() }}">
@@ -19,9 +30,6 @@
                             <div class="form-group col-md-6">
                                 <label for="idcardno">Id Card Number</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">A</span>
-                                    </div>
                                     <input type="text" class="form-control" name="idcardno" id="id_card" placeholder="123456" value="{{ $student->id_card }}">
                                 </div>
                             </div>
@@ -70,7 +78,7 @@
                         <h4>Category and Location</h4>
                         @foreach ($categories as $category)
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="category" value="{{ $category->id }}"
+                                <input class="form-check-input" type="radio" name="category" value="{{ $category->id }}" onchange="updateRate({{ $category->rate }})"
                                 @if ($student->category_id == $category->id)
                                     checked
                                 @endif
@@ -80,6 +88,27 @@
                                 </label>
                             </div>
                         @endforeach
+                        <br>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="rate">Rate</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">MVR</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="rate" id="rate" placeholder="2000" value="{{ $student->rate }}">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="discount">Discount</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">MVR</span>
+                                    </div>
+                                    <input type="text" class="form-control" name="discount" id="discount" placeholder="100" value="{{ $student->discount }}">
+                                </div>
+                            </div>
+                        </div>
                         <br>
                         <div class="form-group">
                             <label>Select Location</label>
@@ -95,6 +124,9 @@
                         </div>
                         <hr>
                         <button type="submit" class="btn btn-primary">Next Step</button>
+                        @if ($student->refunded == '0')
+                        <a href="/student/refund/{{ $student->id }}" class="btn btn-danger float-right">Refund</a>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -111,6 +143,10 @@
         endDate: '-18y',
         autoclose: true,
     });
+    
+    function updateRate(rate) {
+        $("#rate").attr('value', rate);
+    }
 </script>
 
 @endsection

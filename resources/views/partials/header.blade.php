@@ -15,7 +15,7 @@
                 @role('student')
                     <li class="disabled"><a href="#">Student Login</a></li>
                 @endrole
-                @role('admin|instructor')
+                @role('admin|instructor|office')
                 <li class="nav-item">
                     <a class="nav-link" href="/table" target="_blank">View Table</a>
                 </li>
@@ -27,11 +27,11 @@
                         <a class="dropdown-item" href="{{ url('/student/create') }}">Add new</a>
                         <hr>
                         @foreach ($locations as $location)
-                            <a class="dropdown-item" href="{{ url('/student/'. $location->id) }}">View all ({{ $location->name }} | Ongoing)</a>
+                            <a class="dropdown-item" href="{{ url('/student/ongoing/'. $location->id) }}">View all ({{ $location->name }} | Ongoing)</a>
                         @endforeach
                         <hr>
-                        <a class="dropdown-item" href="{{ url('/student') }}">View all</a>
-                        <a class="dropdown-item" href="{{ url('/student/new') }}">Registered from site</a>
+                        <a class="dropdown-item" href="{{ url('/student/all') }}">View all</a>
+                        <a class="dropdown-item" href="{{ url('/student/from-site/new') }}">Registered from site</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">

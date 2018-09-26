@@ -17,7 +17,7 @@
                     @if (Request::is('/'))
                         You are Home
                     @endif
-                    <p>You are logged in <strong>{{ Auth::user()->name }}</strong>!. Your Role is {{ Auth::user()->getRoleNames() }}</p>
+                    <p>You are logged in <strong>{{ Auth::user()->name }}</strong>! Your Role is {{ Auth::user()->getRoleNames() }}</p>
                     <p><div id="todaysDate"></div></p>
                     <p>-Taviyani Driving School-</p>
 

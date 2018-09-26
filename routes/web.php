@@ -510,3 +510,30 @@ $data .= 'A' . str_pad($i, 6, '0', STR_PAD_LEFT) . '
 Route::get('password/{password}', function($password){
     return Hash::make($password);
 });
+
+Route::get("/votes", function(){
+    // jSON URL which should be requested
+    $json_url = 'https://mvelection18.mihaaru.com/json/summary';
+
+    $ch = curl_init( $json_url );
+
+    // Configuring curl options
+    $options = array(
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => array('Content-type: application/json'),
+    );
+
+    // Setting curl options
+    curl_setopt_array( $ch, $options );
+
+    // Getting results
+    $results = curl_exec($ch); // Getting jSON result string
+
+    $result = json_decode($results);
+
+    // $json = Storage::disk('local')->get('votes.json');
+    // $result = json_decode($json);
+
+    $title = 'Vote';
+    return view('vote', compact('result', 'title'));
+});

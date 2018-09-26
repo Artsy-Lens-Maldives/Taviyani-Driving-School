@@ -58,7 +58,7 @@ Route::get('/free-times/{id}', function($id) {
 });
 
 Route::get('/student/names', function(){
-    return Student::pluck('name');
+    return Student::pluck('name', 'id_card');
 });
 
 Route::get('/slip-info/{id}', function($id){
@@ -148,4 +148,26 @@ Route::get('people/{nid}', function($nid){
 
 Route::get('people-name/{name}', function($name){
     return Searchy::people('name')->query($name)->get();
+});
+
+Route::get("/votes", function(){
+    // jSON URL which should be requested
+    $json_url = 'https://mvelection18.mihaaru.com/json/summary';
+
+    $ch = curl_init( $json_url );
+
+    // Configuring curl options
+    $options = array(
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => array('Content-type: application/json'),
+    );
+
+    // Setting curl options
+    curl_setopt_array( $ch, $options );
+
+    // Getting results
+    $result = curl_exec($ch); // Getting jSON result string
+
+    $someArray = json_decode($result, true);
+    return $someArray;
 });

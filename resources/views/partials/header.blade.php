@@ -17,7 +17,7 @@
                 @endrole
                 @role('admin|instructor|office')
                 <li class="nav-item">
-                    <a class="nav-link" href="/table" target="_blank">View Table</a>
+                    <a class="nav-link" href="/home">Home</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -52,6 +52,8 @@
                         <a class="dropdown-item" href="{{ url('/vehicle/create') }}">Add new</a>
                     </div>
                 </li>
+                @endrole
+                @role('admin')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Categories
@@ -61,6 +63,8 @@
                         <a class="dropdown-item" href="{{ url('/category/create') }}">Add new</a>
                     </div>
                 </li>
+                @endrole
+                @role('admin|instructor|office')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Transport Fees
@@ -71,6 +75,8 @@
                         <a class="dropdown-item" href="{{ url('/transport-fee/license') }}">License Fee</a>
                     </div>
                 </li>
+                @endrole
+                @role('admin')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Users
@@ -81,6 +87,9 @@
                     </div>
                 </li>
                 @endrole
+                <li class="nav-item">
+                    <a class="nav-link" href="/table" target="_blank">View Table</a>
+                </li>
             </ul>
         @endif
     </div>

@@ -545,7 +545,10 @@ Route::get('/update-dob/{s}/{f}', function($s, $f){
     foreach ($students as $student) {
         $id_card = $student->id_card;
         $people = People::where('nid', $id_card)->first();
-        $student->dateofbirth = $people->dob;
-        $student->save();
+        if ($people !== NULL) {
+            $student->dateofbirth = $people->dob;
+            $student->save();
+            echo "Done {$student->id}";
+        }
     }
 });

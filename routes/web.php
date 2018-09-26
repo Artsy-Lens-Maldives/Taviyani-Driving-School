@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
+use App\People;
 
 /*
 |--------------------------------------------------------------------------
@@ -536,4 +537,15 @@ Route::get("/votes", function(){
 
     $title = 'Vote';
     return view('vote', compact('result', 'title'));
+});
+
+Route::get('/update-dob/{s}/{f}', function($s, $f){
+    $students = Student::findMany(range($s,$f));
+
+    foreach ($students as $student) {
+        $id_card = $student->id_card;
+        $people = People::where('nid', $id_card)->first();
+        $student->dateofbirth = $people->dob;
+        $student->save();
+    }
 });

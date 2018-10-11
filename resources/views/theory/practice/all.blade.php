@@ -15,49 +15,50 @@
         </div>
     </section>
 
-    <?php $i = 0 ?>
-    @foreach ($theory->questions as $question)
-    <?php $i++ ?>
-    <section class="panel dhivehi-font dhivehi-rtl" id="panel-{{ $i }}">
-        <div class="vertical-box">
-            <div class="question">
-                <div style="text-align: right">
-                    <h5 style="font-size: 200%;">{{ $i }}) {{ $question->body }}</h2>
-                    
-                    <div class="question-answers">
-                    @foreach ($question->answers as $answer)
-                        <div class="form-check">
-                            <label style="margin-right: 20px; font-size: 150%">
-                                <input type="radio" class="form-check-input" name="{{ $question->id }}" style="width:1em; height:1em; margin-right: -40px;">
-                                {{ $answer->answer }}
-                            </label>
+    <form method="POST" action="{{ url()->current() }}">
+        <?php $i = 0 ?>
+        @foreach ($theory->questions as $question)
+            <?php $i++ ?>
+            <section class="panel dhivehi-font dhivehi-rtl" id="panel-{{ $i }}">
+                <div class="vertical-box">
+                    <div class="question">
+                        <div style="text-align: right">
+                            <h5 style="font-size: 200%;">{{ $i }}) {{ $question->body }}</h2>
+                            
+                            <div class="question-answers">
+                            @foreach ($question->answers as $answer)
+                                <div class="form-check">
+                                    <label style="margin-right: 20px; font-size: 150%">
+                                        <input type="radio" class="form-check-input" name="{{ $question->id }}" style="width:1em; height:1em; margin-right: -40px;" value="{{ $answer->id }}">
+                                        {{ $answer->answer }}
+                                    </label>
+                                </div>
+                                <br>
+                            @endforeach
+                            </div>
+            
+                            <div class="question-buttons">
+                                @if ($i !== $theory->questions->count())
+                                    <a name="" id="" class="btn btn-primary" href="#panel-{{ $i + 1 }}" role="button" style="font-size: 200%;">
+                                        ކުރިޔަށް
+                                    </a>
+                                @else
+                                    <button type="submit" class="btn btn-primary" style="font-size: 200%;">
+                                        ޓެސްޓް ނިންމާ
+                                    </button>
+                                @endif
+                                @if ($i !== 1)
+                                    <a name="" id="" class="btn btn-info" href="#panel-{{ $i - 1 }}" role="button" style="font-size: 200%;">
+                                        ފަހަތަށް
+                                    </a>
+                                @endif
+                            </div>
                         </div>
-                        <br>
-                    @endforeach
-                    </div>
-    
-                    <div class="question-buttons">
-                        @if ($i !== $theory->questions->count())
-                            <a name="" id="" class="btn btn-primary" href="#panel-{{ $i + 1 }}" role="button" style="font-size: 200%;">
-                                ކުރިޔަށް
-                            </a>
-                        @else
-                            <button type="submit" class="btn btn-primary" style="font-size: 200%;">
-                                ޓެސްޓް ނިންމާ
-                            </button>
-                        @endif
-                        @if ($i !== 1)
-                            <a name="" id="" class="btn btn-info" href="#panel-{{ $i - 1 }}" role="button" style="font-size: 200%;">
-                                ފަހަތަށް
-                            </a>
-                        @endif
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    @endforeach
+            </section>
+        @endforeach
+    </form>
 
 @endsection
 

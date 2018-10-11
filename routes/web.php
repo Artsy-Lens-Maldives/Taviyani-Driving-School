@@ -567,6 +567,43 @@ Route::prefix('/theory')->group(function () {
             // return $theory;
             return view('theory.practice.all', compact('theory'));
         });
+
+        Route::post('/{id}/all', function ($id, Request $request) {
+            $array = $request->all();
+            $newArray = [];
+            $result = [];
+
+            $questionCount = '0';
+            $correctCount = '0';
+            foreach ($array as $key => $answer) {
+                $questionCount++;
+                $answerM = TheoryAnswer::find($answer);
+                $answerC = TheoryAnswer::where('question_id', $key)->where('is_correct', '1')->first();
+                if ($answerM->is_correct == '1') {
+                    $correctCount++;
+                }
+                $temp = array([
+                    'question' => $key,
+                    'answer' => $answer,
+                    'isCorrect' => $answerM->is_correct,
+                    'correct_answer' => $answerC
+                ]);
+                array_push($newArray, $temp);
+
+                if ($answerM->is_correct == '1') {
+                    $correctCount++;
+                }
+            }
+            
+            array_push($result, [
+                'correct' => $correctCount,
+                'total' => $questionCount,
+                'percent' => round(($correctCount / $questionCount) * 100, 0) . '%'
+            ]);
+
+            return view('theory.result', compact('newArray', 'result'));
+        });
+
         Route::get('/{id}/time', function ($id) {
             $theory = Theory::where('id', $id)->with('questions')->with('questions.answers')->first();
             return view('theory.practice.time', compact('theory'));

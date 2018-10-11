@@ -9,6 +9,9 @@ use App\TempStudent;
 use App\User;
 use App\Vehicle;
 use App\Location;
+use App\Theory;
+use App\TheoryAnswer;
+use App\TheoryQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
@@ -551,4 +554,22 @@ Route::get('/update-dob/{s}/{f}', function($s, $f){
             echo "Done {$student->id}";
         }
     }
+});
+
+Route::prefix('/theory')->group(function () {
+    Route::get('/', function () {
+        return view('theory.index');
+    });
+
+    Route::prefix('/practice')->group(function () {
+        Route::get('/{id}/all', function ($id) {
+            $theory = Theory::where('id', $id)->with('questions')->with('questions.answers')->first();
+            // return $theory;
+            return view('theory.practice.all', compact('theory'));
+        });
+        Route::get('/{id}/time', function ($id) {
+            $theory = Theory::where('id', $id)->with('questions')->with('questions.answers')->first();
+            return view('theory.practice.time', compact('theory'));
+        });
+    });
 });

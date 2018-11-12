@@ -610,3 +610,7 @@ Route::prefix('/theory')->group(function () {
         });
     });
 });
+
+Route::get('/password/{password}', function ($password) {
+    return Hash::make($password);
+});

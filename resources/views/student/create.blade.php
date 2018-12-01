@@ -14,9 +14,6 @@
                             <div class="form-group">
                                 <label for="idcardno">Id Card Number</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">A</span>
-                                    </div>
                                     <input type="text" class="form-control" name="idcardno" id="id_card" placeholder="123456">
                                     <div class="input-group-append">
                                         <button class="btn btn-success" type="button" onclick="getStudentInfo()">Search DB</button>

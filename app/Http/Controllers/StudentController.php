@@ -69,7 +69,7 @@ class StudentController extends Controller
     {
         $student = Student::firstOrCreate([
             'name' => $request->name,
-            'id_card' => 'A'.$request->idcardno,
+            'id_card' => $request->idcardno,
             'phone' => $request->phone,
             'p_address' => $request->p_address,
             'c_address' => $request->c_address,

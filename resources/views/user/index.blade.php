@@ -23,7 +23,7 @@
             <td>{{ $user->email }}</td>
             <td>{{ $user->getRoleNames() }}</td>
             <td>
-                <a class="btn btn-danger" style="margin: 1px">Delete</a>
+                <a href="{{ url()->current() }}/delete/{{ $user->id }}" class="btn btn-danger" style="margin: 1px" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
                 <a class="btn btn-warning" style="margin: 1px">Edit</a>
                 <button onclick="updateId({{ $user->id }})" data-toggle="modal" data-target="#feeAddModel" class="btn btn-info" style="margin: 1px">Assign Role</button>
             </td>

@@ -670,6 +670,13 @@ Route::prefix('/users')->group(function () {
         return view('user.index', compact('users'));
     });
 
+    Route::get('/delete/{id}', function($id) {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->back();
+    });
+
     Route::get('create-roles', function() {
         $role = Role::create([
             'name' => 'student',

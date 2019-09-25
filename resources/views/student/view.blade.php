@@ -69,8 +69,10 @@
                 <td>{{ $student->id_card }}</td>
                 <td>{{ $student->phone }}</td>
                 <td>
-                    @if ($student->category !== NULL)
-                        {{ $student->category->code }}
+                    @if ($student->categories->count() > 0)
+                        @foreach ($student->categories as $category)    
+                            [{{ $category->code }}]
+                        @endforeach
                     @else
                         <a class="btn btn-warning">Unassigned</a>
                     @endif
@@ -102,9 +104,10 @@
                     <button class="btn btn-info" data-toggle="modal" data-target="#theoryTestModal" onclick="updateTheoryTable({{ $student->id }})">T</button>
                     <button class="btn btn-info" data-toggle="modal" data-target="#drivingTestModal" onclick="updateDrivingTable({{ $student->id }})">D</button>
                     <button class="btn btn-info" data-toggle="modal" data-target="#licenseModal">L</button>
-                    <a href="/student/delete/{{ $student->id }}" class="btn btn-danger" style="margin: 1px" onclick="return confirm('Are you sure you would like to delete this category. This process cannot be reversed.')"><i class="fas fa-trash"></i></a>
+                    <a href="/student/delete/{{ $student->id }}" class="btn btn-danger" style="margin: 1px" onclick="return confirm('Are you sure you would like to delete this student. This process cannot be reversed.')"><i class="fas fa-trash"></i></a>
                     <a href="/student/edit/{{ $student->id }}" class="btn btn-warning" style="margin: 1px"><i class="fas fa-edit"></i></a>
                     <a href="/student/receipt/{{ $student->id }}" class="btn btn-success" style="margin: 1px"><i class="fas fa-receipt"></i></a>
+                    <a href="/student/theory/{{ $student->id }}" class="btn btn-info" style="margin: 1px">Theory</a>
                 </td>
             </tr>
         @endforeach
@@ -112,7 +115,7 @@
 @endsection
 
 @section('model-body')
-    <form id="feeForm" action="{{ url()->current() }}/assign-student" method="POST">
+    <form id="feeForm" action="/instructor/assign-student" method="POST">
         @csrf
         <input type="hidden" name="student_id" id="student_id">
         <div class="form-group">
@@ -230,7 +233,7 @@
         });
 
         function updateTime(student_id) {
-            $('#student_id').val(student_id)
+            $('#student_id').attr('value', student_id)
             var id = $( "#instructor" ).val();
             console.log(id);
             $.ajax({

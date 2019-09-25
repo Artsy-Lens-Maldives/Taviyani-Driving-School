@@ -20,17 +20,17 @@
 
                 <div class="card-body">
                     <form method="POST" action="{{ url()->current() }}">
-                        <h4>Student Detail</h4>
+                        <h4>Student Detail @if($student->finished_at !== NULL) <br><b style="color: red">Student completed driving on: </b> {{ $student->finished_at }} @endif</h4>
                         @csrf
                         <div class="form-group">
                             <label for="name">Full Name</label>
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Mohamed Ahmed" value="{{ $student->name }}">
+                            <input type="text" class="form-control" name="name" id="name" placeholder="Mohamed Ahmed" value="{{ $student->name }}" required>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="idcardno">Id Card Number</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="idcardno" id="id_card" placeholder="123456" value="{{ $student->id_card }}">
+                                    <input type="text" class="form-control" name="idcardno" id="id_card" placeholder="123456" value="{{ $student->id_card }}" required>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
@@ -39,7 +39,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">+960</span>
                                     </div>
-                                    <input type="text" class="form-control" name="phone" id="phoneno" placeholder="7654321" value="{{ $student->phone }}">
+                                    <input type="text" class="form-control" name="phone" id="phoneno" placeholder="7654321" value="{{ $student->phone }}" required>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                                     $now->subYears(18);
                                 ?>
                                 <label for="dob">Date of Birth</label>
-                                <input type='text' class="form-control datepicker" value="{{ $student->dateofbirth }}" name="dateofbirth" id="dob" />
+                                <input type='text' class="form-control datepicker" value="{{ $student->dateofbirth }}" name="dateofbirth" id="dob">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="gender">Gender</label>
@@ -123,9 +123,12 @@
                             </select>
                         </div>
                         <hr>
-                        <button type="submit" class="btn btn-primary">Next Step</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                         @if ($student->refunded == '0')
                         <a href="/student/refund/{{ $student->id }}" class="btn btn-danger float-right">Refund</a>
+                        @endif
+                        @if ($student->finished_at == NULL)
+                        <a href="/student/end/{{ $student->id }}" class="btn btn-warning float-right" style="margin-right: 5px;">Student Finish</a>
                         @endif
                     </form>
                 </div>

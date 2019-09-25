@@ -16,6 +16,7 @@
     </section>
 
     <form method="POST" action="{{ url()->current() }}">
+        {{ csrf_field() }}
         <?php $i = 0 ?>
         @foreach ($theory->questions as $question)
             <?php $i++ ?>

@@ -29,7 +29,7 @@
                     <td>
                         <?php $student = $slot->student ?>
                         @if ($slot->isEmpty == 0)
-                        <b>{{ $student->name }}</b> - {{ $student->phone_number }} - {{ $student->category->code }}
+                            <b>{{ $student->name }}</b> - {{ $student->phone_number }} - {{ $student->category->code }}
                         @endif
                     </td>
                     @endforeach

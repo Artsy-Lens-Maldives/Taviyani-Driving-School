@@ -26,10 +26,12 @@
                 <tr>
                     <td>{{ $time->time }}</td>
                     @foreach ($time->slots as $slot)
-                    <td>
+                    <td style="background-color: rgb(173,216,230)">
                         <?php $student = $slot->student ?>
                         @if ($slot->isEmpty == 0)
-                        <b>{{ $student->name }}</b> - {{ $student->phone }} - {{ $student->category->code }}
+                            @if ($student)
+                                <b>{{ $student->name }}</b> - {{ $student->phone }} - @foreach ($student->categories as $category) [{{ $category->code }}] @endforeach
+                            @endif
                         @endif
                     </td>
                     @endforeach

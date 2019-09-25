@@ -14,7 +14,7 @@ class Instructor extends Model
 
     public function slots()
     {
-        return $this->hasMany('App\Slot', 'instructor_id');
+        return $this->hasMany('App\Slot', 'instructor_id')->orderByRaw("CAST(time_id as UNSIGNED) ASC");
     }
 
     public function categories()
@@ -30,5 +30,10 @@ class Instructor extends Model
     public function user()
     {
         return $this->belongsTo('App\User', 'user_id');
+    }
+
+    public function times()
+    {
+        return $this->belongsToMany('App\Time');
     }
 }

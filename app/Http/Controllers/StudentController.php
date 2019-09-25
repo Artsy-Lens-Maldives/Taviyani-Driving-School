@@ -22,9 +22,9 @@ class StudentController extends Controller
             $toDate = date_create_from_format('d/m/Y', $request->endDate);
             $to = date_format($toDate, 'Y-m-d 23:59:59');
 
-            $students = Student::whereBetween('created_at', [$from, $to])->with('category')->with('slot')->with('slot.instructor')->with('location')->get();
+            $students = Student::whereBetween('created_at', [$from, $to])->with('categories')->with('slot')->with('slot.instructor')->with('location')->get();
         } else {
-            $students = Student::with('category')->with('slot')->with('slot.instructor')->with('location')->get();
+            $students = Student::with('categories')->with('slot')->with('slot.instructor')->with('location')->get();
         }
         $instructors = Instructor::all();
         $location = null;
@@ -41,9 +41,9 @@ class StudentController extends Controller
             $toDate = date_create_from_format('d/m/Y', $request->endDate);
             $to = date_format($toDate, 'Y-m-d  23:59:59');
 
-            $students = Student::where('refunded', '0')->where('location_id', $location_id)->where('finished_at', '=', null)->whereBetween('created_at', [$from, $to])->with('category')->with('slot')->with('slot.instructor')->with('location')->get();
+            $students = Student::where('refunded', '0')->where('location_id', $location_id)->where('finished_at', '=', null)->whereBetween('created_at', [$from, $to])->with('categories')->with('slot')->with('slot.instructor')->with('location')->get();
         } else {
-            $students = Student::where('refunded', '0')->with('category')->with('slot')->with('slot.instructor')->with('location')->where('location_id', $location_id)->where('finished_at', '=', null)->get();
+            $students = Student::where('refunded', '0')->with('categories')->with('slot')->with('slot.instructor')->with('location')->where('location_id', $location_id)->where('finished_at', '=', null)->get();
         }
         
         $instructors = Instructor::all();
@@ -76,12 +76,15 @@ class StudentController extends Controller
             'dateofbirth' => $request->dateofbirth,
             'gender' => $request->gender,
             'license_no' => $request->license_no,
-            'category_id' => $request->category,
             'location_id' => $request->location_id,
             'user_id' => \Auth::user()->id,
             'rate' => $request->rate,
             'discount' =>$request->discount
         ]);
+
+        foreach ($request->category as $category) {
+            $student->categories()->attach($category);
+        }
 
         $url = 'student/create/step-2/'.$student->id;
         return redirect($url);
@@ -89,10 +92,7 @@ class StudentController extends Controller
     
     public function create_step_3($id)
     {
-        $student = Student::findOrFail($id);
-        $instructors = Category::find($student->category_id)->instructors()->where('location_id', $student->location_id)->get();
-        
-        return view('student.create-3', compact('student', 'instructors'));
+        return redirect('/student');
     }
 
     public function create_step_3_store($id, Request $request)

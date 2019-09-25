@@ -12,9 +12,9 @@ class Student extends Model
     protected $guarded = [];
     protected $dates = ['deleted_at'];
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo('App\Category', 'category_id');
+        return $this->belongsToMany('App\Category');
     }
 
     public function slot()

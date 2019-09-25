@@ -51,7 +51,9 @@ Route::prefix('/slot')->group(function () {
 Route::prefix('/table')->group(function () {
     Route::get('/', function () {
         $instructors = Instructor::with('slots')->with('categories')->get();
-        $times = Time::with('slots')->with('slots.student')->with('slots.student.category')->get();
+        $times = Time::with('slots')->with('slots.student')->with('slots.student.categories')->get();
+
+        // return $times;
 
         return view('table.index', compact('instructors', 'times'));
     });
@@ -79,6 +81,8 @@ Route::prefix('/student')->group(function () {
     Route::get('/delete/{id}', function($id) {
         $student = Student::findOrFail($id);
         $student->delete();
+
+        return redirect()->back();
     });
     
     // --------------------------------------------- //s
@@ -124,6 +128,20 @@ Route::prefix('/student')->group(function () {
         return redirect('/student/receipt/'. $student->id);
     });
 
+    Route::get('end/{student}', function(Student $student){
+        $student->finished_at = date("d/m/Y");
+        $student->save();
+
+        $slot = Slot::where('student_id', $student->id)->first();
+        if ($slot !== NULL) {
+            $slot->student_id = 0;
+            $slot->isEmpty = 1;
+            $slot->save();
+        }
+
+        return redirect()->back();
+    });
+
     // --------------------------------------------- //
 
     Route::get('/fix-created-at', function() {
@@ -142,12 +160,77 @@ Route::prefix('/student')->group(function () {
         return view('student.newView', compact('students'));
     });
 
+    Route::get('fix-categories', function(){
+        $students = Student::all();
+        foreach ($students as $student) {
+            $student->categories()->attach($student->category_id);
+            $student->save();
+        }
+    });
+
     // --------------------------------------------- //
 
     Route::get('/receipt/{id}', function($id){
         $student = Student::where('id', $id)->with('category')->with('slot')->with('slot.instructor')->with('location')->first();
 
         return view('student.receipt', compact('student'));
+    });
+
+    // --------------------------------------------- //
+
+    Route::get('/theory/{id}', function($id){
+        $student = Student::find($id);
+
+        return view('theory.student', compact('student'));
+    });
+
+    Route::prefix('/theory')->group(function () {
+        Route::get('{student_id}/practice/{id}/all', function ($student_id, $id) {
+            $theory = Theory::where('id', $id)->with('questions')->with('questions.answers')->first();
+            // return $theory;
+            return view('theory.practice.all', compact('theory'));
+        });
+
+        Route::post('{student_id}/practice/{id}/all', function ($id, Request $request) {
+            $array = $request->all();
+            $newArray = [];
+            $result = [];
+
+            $questionCount = '0';
+            $correctCount = '0';
+            foreach ($array as $key => $answer) {
+                $questionCount++;
+                $answerM = TheoryAnswer::find($answer);
+                $answerC = TheoryAnswer::where('question_id', $key)->where('is_correct', '1')->first();
+                if ($answerM->is_correct == '1') {
+                    $correctCount++;
+                }
+                $temp = array([
+                    'question' => $key,
+                    'answer' => $answer,
+                    'isCorrect' => $answerM->is_correct,
+                    'correct_answer' => $answerC
+                ]);
+                array_push($newArray, $temp);
+
+                if ($answerM->is_correct == '1') {
+                    $correctCount++;
+                }
+            }
+            
+            array_push($result, [
+                'correct' => $correctCount,
+                'total' => $questionCount,
+                'percent' => round(($correctCount / $questionCount) * 100, 0) . '%'
+            ]);
+
+            return view('theory.result', compact('newArray', 'result'));
+        });
+
+        Route::get('{student_id}/practice/{id}/time', function ($student_id, $id) {
+            $theory = Theory::where('id', $id)->with('questions')->with('questions.answers')->first();
+            return view('theory.practice.time', compact('theory'));
+        });
     });
 });
 
@@ -183,7 +266,8 @@ Route::prefix('/instructor')->group(function (){
             $slot->student_id = $request->student_id;
             $slot->isEmpty = '0';
             $slot->save();
-            return redirect('table');
+            
+            return redirect('instructor');  
         } else {
             return redirect('instructor');
         }
@@ -198,14 +282,6 @@ Route::prefix('/instructor')->group(function (){
     });
 
     Route::post('create', function (Request $request){
-        // TODO: Fill this
-
-        // dd($request->category);
-        if ($request->category) {
-            $arr = $request->category;
-            $str = implode(",", $arr);
-        }
-
         try {
             $instructor = Instructor::create([
                 'location_id' => $request->location_id,
@@ -218,8 +294,13 @@ Route::prefix('/instructor')->group(function (){
                 'gender' => $request->gender,
                 'license_no' => $request->license_no,
                 'license_expiry' => $request->license_expiry,
-                'category' => $str,
             ]);
+
+            foreach ($request->category as $category) {
+                \DB::table('category_instructor')->insert(
+                    ['category_id' => $category, 'instructor_id' => $instructor->id]
+                );
+            }
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('alert-danger', $e->getMessage());
         }
@@ -257,7 +338,7 @@ Route::prefix('/instructor')->group(function (){
             }
         }
 
-        return redirect('/instructor/categories-pivot');
+        return redirect('/instructor');
     });
     Route::get('/categories-pivot', 'CategoryController@create_pivot_from_comma_table');
 
@@ -266,20 +347,24 @@ Route::prefix('/instructor')->group(function (){
         foreach ($slots as $slot) {
             $slot->delete();
         }
-        $user = User::findOrFail($instructor->user_id);
-        $user->delete();
+        $user = User::find($instructor->user_id);
+        if ($user) {
+            $user->delete();
+        }
         $instructor->delete();
 
+        return redirect()->back();
     });
 
     Route::get('/edit/{instructor}', function(Instructor $instructor) {
         $insCategories = $instructor->categories;
         $insSlots = $instructor->slots;
+        $insTimes = $instructor->times;
         $categories = Category::all();
         $locations = Location::all();
         $times = Time::all();
-        // dd($insSlots);
-        return view('instructor.edit', compact('instructor', 'insCategories', 'insSlots','categories', 'locations', 'times'));
+        // return $insSlots;
+        return view('instructor.edit', compact('instructor', 'insCategories', 'insSlots', 'insTimes', 'categories', 'locations', 'times'));
     });
 
     Route::post('/edit/{instructor}', function(Instructor $instructor, Request $request) {
@@ -295,8 +380,61 @@ Route::prefix('/instructor')->group(function (){
         $instructor->license_expiry = $request->license_expiry;
         $instructor->save();
 
-        $rows = \DB::table('category_instructor')->where('instructor_id', $instructor->id)->get();
-        return $rows;
+        if ($request->category) {
+            $oldCategories = $instructor->categories->pluck('id')->toArray();
+
+            $removedCat = array_diff($oldCategories, $request->category);
+            $addedCat = array_diff($request->category, $oldCategories);
+
+            if ($removedCat) {
+                foreach ($removedCat as $category) {
+                    \DB::table('category_instructor')->where('category_id', $category)->where('instructor_id', $instructor->id)->delete();
+                }
+            }
+
+            if ($addedCat) {
+                foreach ($addedCat as $category) {
+                    \DB::table('category_instructor')->insert(
+                        ['category_id' => $category, 'instructor_id' => $instructor->id]
+                    );
+                }
+            }
+        }
+
+        if ($request->time) {
+            $oldSlotsIDs = Slot::where('instructor_id', $instructor->id)->pluck('time_id')->toArray();
+            
+            $removed = array_diff($oldSlotsIDs, $request->time);
+            $added = array_diff($request->time, $oldSlotsIDs);
+
+            // REMOVE THE OLD ONES
+            if ($removed) {
+                foreach ($removed as $remove) {
+                    $instructor->times()->detach($remove);
+                    $slot = Slot::where('instructor_id', $instructor->id)->where('time_id', $remove)->first();
+                    $slot->delete();
+                }
+            }
+            
+            // ADD NEW ONES
+            if ($added) {
+                foreach ($added as $id) {
+                    $instructor->times()->attach($id);
+
+                    $checkSlot = Slot::where('instructor_id', $instructor->id)->where('time_id', $id)->first();
+    
+                    if ($checkSlot == null) {
+                        $slot = new Slot;
+                        $slot->instructor_id = $instructor->id;
+                        $slot->time_id = $id;
+                        $slot->save();
+                    }
+                }
+                
+            }
+        }
+
+        return redirect()->back();
 
     });
 });
@@ -609,6 +747,9 @@ Route::prefix('/theory')->group(function () {
             return view('theory.practice.time', compact('theory'));
         });
     });
+
+    
+
 });
 
 Route::get('/password/{password}', function ($password) {

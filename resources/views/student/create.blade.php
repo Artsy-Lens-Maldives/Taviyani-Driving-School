@@ -14,7 +14,7 @@
                             <div class="form-group">
                                 <label for="idcardno">Id Card Number</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="idcardno" id="id_card" placeholder="123456">
+                                    <input type="text" class="form-control" name="idcardno" id="id_card" placeholder="123456" required>
                                     <div class="input-group-append">
                                         <button class="btn btn-success" type="button" onclick="getStudentInfo()">Search DB</button>
                                     </div>
@@ -22,7 +22,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="name">Full Name</label>
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Mohamed Ahmed">
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Mohamed Ahmed" required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
@@ -31,7 +31,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">+960</span>
                                         </div>
-                                        <input type="text" class="form-control" name="phone" id="phoneno" placeholder="7654321">
+                                        <input type="text" class="form-control" name="phone" id="phoneno" placeholder="7654321" required>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -46,11 +46,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="inputAddress">Permanent Address</label>
-                                <input type="text" class="form-control" name="p_address"  id="p_address" placeholder="M.House Name">
+                                <input type="text" class="form-control" name="p_address"  id="p_address" placeholder="M.House Name" required>
                             </div>
                             <div class="form-group">
                                 <label for="inputAddress2">Residential Address</label>
-                                <input type="text" class="form-control" name="c_address" id="c_address" placeholder="G.House Name">
+                                <input type="text" class="form-control" name="c_address" id="c_address" placeholder="G.House Name" required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
@@ -59,7 +59,7 @@
                                         $now->subYears(18);
                                     ?>
                                     <label for="dob">Date of Birth</label>
-                                    <input type='text' class="form-control datepicker" value="{{ $now->format('d/m/Y') }}" name="dateofbirth" id="dob" />
+                                    <input type='text' class="form-control datepicker" value="{{ $now->format('d/m/Y') }}" name="dateofbirth" id="dob" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="gender">Gender</label>
@@ -79,7 +79,7 @@
                             <h4>Category, rate and Location</h4>
                             @foreach ($categories as $category)
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="category" value="{{ $category->id }}" onchange="updateRate({{ $category->rate }})">
+                                    <input class="category form-check-input" type="checkbox" name="category[]" value="{{ $category->id }}" data-rate="{{ $category->rate }}">
                                     <label class="form-check-label" for="exampleRadios1">
                                         {{ $category->code }} - {{ $category->name }} - Price: {{ $category->rate }}
                                     </label>
@@ -93,7 +93,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">MVR</span>
                                         </div>
-                                        <input type="text" class="form-control" name="rate" id="rate" placeholder="2000">
+                                        <input type="text" class="form-control" name="rate" id="rate" value="0" placeholder="2000">
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -127,15 +127,26 @@
     @section('js')
 
     <script type="text/javascript">
+        var current = $("#rate").attr('value');
+        console.log(current);
+
         $('.datepicker').datepicker({
             format: 'dd/mm/yyyy',
             endDate: '-18y',
             autoclose: true,
         });
 
-        function updateRate(rate) {
-            $("#rate").attr('value', rate);
-        }
+        $("input:checkbox.category").click(function() {
+            var rate = $(this).data('rate');
+            var current = $("#rate").attr('value');
+            // console.log(rate)
+
+            if($(this).is(":checked")) {
+                $("#rate").attr('value', parseInt(current) + parseInt(rate));
+            } else {
+                $("#rate").attr('value', parseInt(current) - parseInt(rate));
+            }
+        }); 
     </script>
 
     <script>

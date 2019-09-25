@@ -561,11 +561,10 @@ Route::prefix('/transport-fee')->group(function () {
             $type = 'Driving Fees';
 
             $students = Student::all();
-            return view('transportfee.driving.index', compact('fees'));
+            return view('transportfee.driving.index', compact('fees', 'type', 'students'));
         });
 
         Route::post('/post', function (Request $request) {
-            // return $request;
             $student = Student::where('id', $request->student_id)->first();
 
             $fee = Transportfee::create([
@@ -577,11 +576,12 @@ Route::prefix('/transport-fee')->group(function () {
 
             if ($request->slipTaken == '1') {
                 $fee->slipTaken = 1;
-                $fee->save();
-            }
 
-            if ($request->has('date')) {
-                $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+                if ($request->has('date')) {
+                    $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+                    $fee->save();
+                }
+
                 $fee->save();
             }
 
@@ -589,6 +589,24 @@ Route::prefix('/transport-fee')->group(function () {
             $student->save();
             
             return redirect('/transport-fee/driving');
+        });
+
+        Route::post('/addSlip', function (Request $request) {
+            $slip = Transportfee::find($request->slip_id);
+
+            $slip->paid = $request->paid;
+            $slip->slipTaken = 1;
+            $slip->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+            $slip->save();
+
+            return redirect('/transport-fee/driving');
+        });
+
+        Route::get('/delete/{id}', function($id){
+            $slip = Transportfee::findOrFail($id);
+            $slip->delete();
+
+            return redirect()->back();
         });
     });
 
@@ -599,12 +617,11 @@ Route::prefix('/transport-fee')->group(function () {
             $type = 'Theory Fees';
 
             $students = Student::all();
-            return view('transportfee.license.index', compact('fees'));
+            return view('transportfee.license.index', compact('fees', 'type', 'students'));
         });
 
         Route::post('/post', function (Request $request) {
-            // return $request;
-            $student = Student::where('name', $request->student)->first();
+            $student = Student::where('id', $request->student_id)->first();
 
             $fee = Transportfee::create([
                 'student_id' => $student->id,
@@ -616,14 +633,32 @@ Route::prefix('/transport-fee')->group(function () {
             if ($request->slipTaken == '1') {
                 $fee->slipTaken = 1;
                 $fee->save();
+
+                if ($request->has('date')) {
+                    $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+                    $fee->save();
+                }
             }
-            
-            if ($request->has('date')) {
-                $fee->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
-                $fee->save();
-            }
-            
+
             return redirect('/transport-fee/license');
+        });
+
+        Route::post('/addSlip', function (Request $request) {
+            $slip = Transportfee::find($request->slip_id);
+
+            $slip->paid = $request->paid;
+            $slip->slipTaken = 1;
+            $slip->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+            $slip->save();
+
+            return redirect('/transport-fee/license');
+        });
+
+        Route::get('/delete/{id}', function($id){
+            $slip = Transportfee::findOrFail($id);
+            $slip->delete();
+
+            return redirect()->back();
         });
     });
 });

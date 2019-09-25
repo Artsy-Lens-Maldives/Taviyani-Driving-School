@@ -514,7 +514,7 @@ Route::prefix('/transport-fee')->group(function () {
 
         Route::post('/post', function (Request $request) {
             // return $request;
-            $student = Student::where('name', $request->student)->first();
+            $student = Student::where('id', $request->student_id)->first();
 
             $fee = Transportfee::create([
                 'student_id' => $student->id,
@@ -534,13 +534,31 @@ Route::prefix('/transport-fee')->group(function () {
             
             return redirect('/transport-fee/theory');
         });
+
+        Route::post('/addSlip', function (Request $request) {
+            $slip = Transportfee::find($request->slip_id);
+
+            $slip->paid = $request->paid;
+            $slip->slipTaken = 1;
+            $slip->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d H:i:s');
+            $slip->save();
+
+            return redirect('/transport-fee/theory');
+        });
+
+        Route::get('/delete/{id}', function($id){
+            $slip = Transportfee::findOrFail($id);
+            $slip->delete();
+
+            return redirect()->back();
+        });
     });
 
     // ------------------------------- //
     Route::prefix('/driving')->group(function () {
         Route::get('/', function () {
             $fees = Transportfee::where('type', 'driving')->get();
-            $type = 'Theory Fees';
+            $type = 'Driving Fees';
 
             $students = Student::all();
             return view('transportfee.driving.index', compact('fees'));
@@ -548,7 +566,7 @@ Route::prefix('/transport-fee')->group(function () {
 
         Route::post('/post', function (Request $request) {
             // return $request;
-            $student = Student::where('name', $request->student)->first();
+            $student = Student::where('id', $request->student_id)->first();
 
             $fee = Transportfee::create([
                 'student_id' => $student->id,

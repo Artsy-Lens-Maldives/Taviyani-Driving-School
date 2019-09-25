@@ -10,7 +10,7 @@
                     <hr>
                     <form method="POST" action="{{ url()->current() }}">
                         @csrf
-                        <h6>Cycle Number</h6>
+                        <h6>Number</h6>
                         <div class="form-group">
                             <input type="text" class="form-control" name="number" id="number" placeholder="P7002">
                         </div>

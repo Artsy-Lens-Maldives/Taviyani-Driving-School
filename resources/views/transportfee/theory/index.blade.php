@@ -54,12 +54,12 @@
                     @endif
                 </td>
                 <td>
-                    <a href="" class="btn btn-danger">Delete</a>
+                    <a href="{{ url()->current() }}/delete/{{ $fee->id }}" class="btn btn-danger">Delete</a>
                     <a href="" class="btn btn-warning">Edit</a>
                     @if ($fee->total - $fee->paid == 0)
                         <a href="" class="btn btn-success disabled" disabled>Paid fully</a>
                     @else
-                        <a href="" class="btn btn-info">Recive Payment</a>
+                    <button class="btn btn-info" data-toggle="modal" data-target="#slipAddModal" onclick="getSlipInfo('{{ $fee->id }}')">Receive Payment</button>
                     @endif
                     @if ($fee->date !== NULL)
                         @if (!$fee->date->isPast())
@@ -84,10 +84,8 @@
                     <form id="slipAddForm" action="{{ url()->current() }}/addSlip" method="POST">
                         @csrf
                         <input type="hidden" name="slip_id" id="slip_id" value="">
-                        <div id="prefetch" class="form-group">
-                            <label>Student Name<span class="red">*</span></label>
-                            <input type="text" class="form-control typeahead" name="student" id="selectStudentName" value="" required>
-                        </div>
+                        <input type="hidden" name="student_id" id="hiddenStudentId" value="">
+                        <h3>Student Name: <span id="selectStudentName"></span></h3>
                         <div class="form-group">
                             <label>Rate</label>
                             <input type="number" class="form-control" name="rate" value="100" required>
@@ -99,7 +97,7 @@
                         <hr>
                         <div class="form-group">
                             <label for="date">Test Date</label>
-                            <input type='text' class="form-control datepicker" name="date" id="date" value="" />
+                            <input type='text' class="form-control datepicker" name="date" id="selectTestDate" value="" />
                             <small id="dateHelpBlock" class="form-text text-muted">
                                 Enter date of the test
                             </small>
@@ -107,7 +105,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <input form="feeForm" type="submit" class="btn btn-primary"></input>
+                    <input form="slipAddForm" type="submit" class="btn btn-primary">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -119,10 +117,12 @@
     <form id="feeForm" action="{{ url()->current() }}/post" method="POST">
         @csrf
         <div class="form-group">
-            <label>Select Student <span class="red">*</span></label>
-            <div id="prefetch">
-                <input type="text" class="form-control typeahead" name="student" placeholder="Enter student name" required>
-            </div>
+            <label>Select Student</label>
+            <select name="student_id" id="student" class="selectpicker form-control" data-live-search="true">
+                @foreach ($students as $student)
+                    <option value="{{ $student->id }}">{{ $student->name }}</option>
+                @endforeach
+            </select>
         </div>
         <div class="form-group">
             <label>Rate</label>
@@ -205,8 +205,19 @@
         function getSlipInfo(id) {
             $.get("/api/slip-info/" + id, function(data, status){
                 console.log(data);
-                $("selectStudentName").attr('value', data.student.name);
-                $("selectStudentPaid").attr('value', data.paid);
+                $("#selectStudentName").text(data.student.name);
+                $("#selectStudentPaid").attr('value', data.paid);
+                $("#hiddenStudentId").attr('value', data.student.id);
+                $("#slip_id").attr('value', id);
+
+                if (data.date !== null) {
+                    var timestamp = Date.parse(data.date);
+                    date = new Date(timestamp);
+                    // console.log(date);
+                    var formatted_date = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
+                }
+
+                $("#selectTestDate").attr('value', formatted_date);
             });
         }
     </script>

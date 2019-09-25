@@ -672,7 +672,8 @@ Route::prefix('/users')->group(function () {
 
     Route::get('/delete/{id}', function($id) {
         $user = User::findOrFail($id);
-        $user->delete();
+        $user->password = null;
+        $user->save();
 
         return redirect()->back();
     });

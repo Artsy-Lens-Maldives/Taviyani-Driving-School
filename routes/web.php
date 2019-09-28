@@ -113,22 +113,27 @@ Route::prefix('/student')->group(function () {
 
         }
 
+        // return $request->category;
+
         if ($request->category) {
-            $oldCategories = $student->categories->pluck('category_id')->toArray();
+            $oldCategories = $student->categories->pluck('id')->toArray();
+
+            // dd($oldCategories);
 
             $removedCat = array_diff($oldCategories, $request->category);
             $addedCat = array_diff($request->category, $oldCategories);
+            // dd($oldCategories, $removedCat, $addedCat);
 
             if ($removedCat) {
                 foreach ($removedCat as $category) {
-                    $student->categories()->detach($student->category_id);
+                    $student->categories()->detach($category);
                     $student->save();
                 }
             }
 
             if ($addedCat) {
                 foreach ($addedCat as $category) {
-                    $student->categories()->attach($student->category_id);
+                    $student->categories()->attach($category);
                     $student->save();
                 }
             }

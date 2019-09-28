@@ -93,7 +93,7 @@
                 <td>{{ strtoupper($student->location->code) }}/{{ $student->created_at->format("Y") }}/{{ $student->created_at->format("m") }}/{{ $student->id }}</td>
                 <td>{{ $student->created_at->format('d/m/Y') }}</td>
                 <td>
-                    @if ($student->user_id !== null)
+                    @if ($student->user_id !== null & $student->user !== null)
                         {{ $student->user->name }}
                     @else
                         -

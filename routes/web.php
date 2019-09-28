@@ -107,16 +107,35 @@ Route::prefix('/student')->group(function () {
         $student->save();
 
         // Old check
-        if ($student->category_id !== $request->category OR $student->location_id !== $request->location_id) {
-            $student->category_id = $request->category;
+        if ($student->location_id !== $request->location_id) {
             $student->location_id = $request->location_id;
             $student->save();
 
-            $url = 'student/edit/step-2/'.$student->id;
-            return redirect($url);
-        } else {
-            return redirect()->back()->with('alert-success', 'Student info edited');
         }
+
+        if ($request->category) {
+            $oldCategories = $student->categories->pluck('category_id')->toArray();
+
+            $removedCat = array_diff($oldCategories, $request->category);
+            $addedCat = array_diff($request->category, $oldCategories);
+
+            if ($removedCat) {
+                foreach ($removedCat as $category) {
+                    $student->categories()->detach($student->category_id);
+                    $student->save();
+                }
+            }
+
+            if ($addedCat) {
+                foreach ($addedCat as $category) {
+                    $student->categories()->attach($student->category_id);
+                    $student->save();
+                }
+            }
+        }
+
+
+        return redirect()->back()->with('alert-success', 'Student info edited');
     });
 
     Route::get('refund/{student}', function(Student $student){
@@ -171,7 +190,7 @@ Route::prefix('/student')->group(function () {
     // --------------------------------------------- //
 
     Route::get('/receipt/{id}', function($id){
-        $student = Student::where('id', $id)->with('category')->with('slot')->with('slot.instructor')->with('location')->first();
+        $student = Student::where('id', $id)->with('categories')->with('slot')->with('slot.instructor')->with('location')->first();
 
         return view('student.receipt', compact('student'));
     });
@@ -758,6 +777,9 @@ Route::get('/update-dob/{s}/{f}', function($s, $f){
 Route::prefix('/theory')->group(function () {
     Route::get('/', function () {
         return view('theory.index');
+    });
+    Route::get('/waiting', function (){
+        return view('theory.waitingPage');
     });
 
     Route::prefix('/practice')->group(function () {

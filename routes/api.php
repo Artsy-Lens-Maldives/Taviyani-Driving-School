@@ -7,6 +7,7 @@ use App\Slot;
 use App\Student;
 use App\Transportfee;
 use App\TempStudent;
+use App\TheoryUrl;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\People;
@@ -170,4 +171,14 @@ Route::get("/votes", function(){
 
     $someArray = json_decode($result, true);
     return $someArray;
+});
+
+Route::get('/check-for-new-test', function(){
+    $url = TheoryUrl::where('new', '1')->first();
+
+    if ($url) {
+        return $url;
+    } else {
+        return 'false';
+    }
 });

@@ -70,7 +70,7 @@
                         <tr>
                             <td width="21%" align="center"><strong>INFO</strong></td>
                             <td width="7%" align="center"><strong>CATEGORY</strong></td>
-                            <td width="37%" align="center"><strong>DESCRIPTION</strong></td>
+                            <td width="44%" align="center"><strong>DESCRIPTION</strong></td>
                             <td width="10%" align="center"><strong>QTY</strong></td>
                             <td width="11%" align="center"><strong>RATE</strong></td>
                             <td width="14%" align="center"><strong>TOTAL</strong></td>
@@ -83,8 +83,8 @@
                                 &nbsp;{{ $student->c_address }}<br>
                                 &nbsp;{{ $student->p_address }}<br>
                             </td>
-                            <td align="center" contenteditable="true">&nbsp;{{ $student->category->code }}</td>
-                            <td contenteditable="true">&nbsp;Payment to {{ $student->category->code }} Category Driving Course</td>
+                            <td align="center" contenteditable="true">&nbsp;@foreach ($student->categories as $category) {{ $category->code }} @endforeach</td>
+                            <td contenteditable="true">&nbsp;Payment to @foreach ($student->categories as $category) {{ $category->code }} @endforeach Category Driving Course</td>
                             <td align="center" contenteditable="true">1</td>
                             <td align="center" contenteditable="true">{{ $student->rate }}</td>
                             <td align="center" contenteditable="true">{{ $student->rate }}</td>

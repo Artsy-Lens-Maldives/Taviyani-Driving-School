@@ -78,10 +78,12 @@
                         <h4>Category and Location</h4>
                         @foreach ($categories as $category)
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="category" value="{{ $category->id }}" onchange="updateRate({{ $category->rate }})"
-                                @if ($student->category_id == $category->id)
-                                    checked
-                                @endif
+                                <input class="category form-check-input" type="checkbox" name="category[]" value="{{ $category->id }}" data-rate="{{ $category->rate }}"
+                                @foreach ($student->categories as $cat)
+                                    @if ($cat->code == $category->code) 
+                                        checked
+                                    @endif
+                                @endforeach
                                 >
                                 <label class="form-check-label" for="exampleRadios1">
                                     {{ $category->code }} - {{ $category->name }} - Price: {{ $category->rate }}
@@ -147,9 +149,17 @@
         autoclose: true,
     });
     
-    function updateRate(rate) {
-        $("#rate").attr('value', rate);
-    }
+    $("input:checkbox.category").click(function() {
+        var rate = $(this).data('rate');
+        var current = $("#rate").attr('value');
+        // console.log(rate)
+
+        if($(this).is(":checked")) {
+            $("#rate").attr('value', parseInt(current) + parseInt(rate));
+        } else {
+            $("#rate").attr('value', parseInt(current) - parseInt(rate));
+        }
+    }); 
 </script>
 
 @endsection

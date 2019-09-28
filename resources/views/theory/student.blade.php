@@ -2,7 +2,8 @@
 
 @section('content')
     <div class="container">
-        <div class="box-center" style="width: 40%">
+        <center>
+        <div class="box-center" style="width: 40%" id="theory">
             <center>
                 <h3>Theory Practice Test</h3>
                 <h4>Student Name: <b>{{ $student->name }}</b></h4>
@@ -11,19 +12,19 @@
                 <button class="btn btn-info btn-lg btn-block" onclick="startTest('{{ url()->current() }}/practice/1/time')">Theory (30 Questions - 30 Mins)</button>
             </center>
         </div>
+        <div class="box-center" style="width: 40%; display: none;" id="started">
+            <center>
+                <h2>Test Started</h2>
+            </center>
+        </div>
+        </center>  
     </div>
 @endsection
 
 @section('js')
     <script>
     $(function() {
-        $('.box-center').css({
-            'position' : 'absolute',
-            'left' : '50%',
-            'top' : '50%',
-            'margin-left' : function() {return -$(this).outerWidth()/2},
-            'margin-top' : function() {return -$(this).outerHeight()/2}
-        });
+        //         
     });
 
     function startTest(url) {
@@ -36,7 +37,9 @@
             },
             success: function(data)
             {
-                console.log(data)
+                console.log(data);
+                $('#theory').hide();
+                $('#started').show();
             }
         });
     }

@@ -86,6 +86,10 @@ class StudentController extends Controller
             $student->categories()->attach($category);
         }
 
+        $student->month = $student->created_at->format('m');
+        $student->year = $student->created_at->format('Y');
+        $student->save();
+
         $url = 'student/create/step-2/'.$student->id;
         return redirect($url);
     }

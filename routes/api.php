@@ -182,3 +182,11 @@ Route::get('/check-for-new-test', function(){
         return 'false';
     }
 });
+
+Route::post('/create-new-test', function(Request $request){
+    $url = new TheoryUrl;
+    $url->url = $request->url;
+    $url->save();
+
+    return $url;
+});

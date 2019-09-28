@@ -23,8 +23,7 @@
             'margin-top' : function() {return -$(this).outerHeight()/2}
         });
 
-        var response = fetchUrl();
-        console.log(response);
+        fetchUrl();
     });
 
     function fetchUrl() {
@@ -34,14 +33,17 @@
             success: function(data)
             {
                 if (data == 'false') {
-                    return false;
+                    console.log(false);
                 } else {
-                    return data.url
+                    window.location.replace(data.url);
                 }
             }
         });
     }
-    
+
+    window.setInterval(function(){
+        fetchUrl();
+    }, 30000);
 
     </script>
 @endsection

@@ -7,8 +7,8 @@
                 <h3>Theory Practice Test</h3>
                 <h4>Student Name: <b>{{ $student->name }}</b></h4>
                 <br>
-                <a href="{{ url()->current() }}/practice/1/all" class="btn btn-primary btn-lg btn-block" target="popup" onclick="window.open('{{ url()->current() }}/practice/1/all','Theory Practice','width=600,height=400')">Theory All Questions</a>
-                <a href="{{ url()->current() }}/practice/1/time" class="btn btn-info btn-lg btn-block">Theory (30 Questions - 30 Mins)</a>
+                <button class="btn btn-primary btn-lg btn-block" onclick="startTest('{{ url()->current() }}/practice/1/all')">Theory All Questions</button>
+                <button class="btn btn-info btn-lg btn-block" onclick="startTest('{{ url()->current() }}/practice/1/time')">Theory (30 Questions - 30 Mins)</button>
             </center>
         </div>
     </div>
@@ -25,5 +25,20 @@
             'margin-top' : function() {return -$(this).outerHeight()/2}
         });
     });
+
+    function startTest(url) {
+        $.ajax({
+            type: "POST",
+            url: '/api/create-new-test',
+            data: {
+                url: url,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(data)
+            {
+                console.log(data)
+            }
+        });
+    }
     </script>
 @endsection

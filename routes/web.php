@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
 use App\People;
+use App\TheoryUrl;
 
 /*
 |--------------------------------------------------------------------------
@@ -214,7 +215,6 @@ Route::prefix('/student')->group(function () {
             // return $theory;
             return view('theory.practice.all', compact('theory'));
         });
-
         Route::post('{student_id}/practice/{id}/all', function ($id, Request $request) {
             $array = $request->all();
             $newArray = [];
@@ -247,6 +247,10 @@ Route::prefix('/student')->group(function () {
                 'total' => $questionCount,
                 'percent' => round(($correctCount / $questionCount) * 100, 0) . '%'
             ]);
+
+            $url = TheoryUrl::where('url', URL::current())->first();
+            $url->new = 0;
+            $url->save();
 
             return view('theory.result', compact('newArray', 'result'));
         });

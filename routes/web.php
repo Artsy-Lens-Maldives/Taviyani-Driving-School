@@ -847,3 +847,14 @@ Route::prefix('/theory')->group(function () {
 Route::get('/password/{password}', function ($password) {
     return Hash::make($password);
 });
+
+Route::prefix('/reports')->group(function () {
+    Route::get('/all', function () {
+        $studentCounts = Student::where('year', '2019')->select(
+            DB::raw('count(id) as sums'), 
+            DB::raw("DATE_FORMAT(created_at,'%m') as months")
+        )->groupBy('months')->get();
+
+        return view('report.index', compact($studentCounts));
+    });
+});

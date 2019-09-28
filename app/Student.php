@@ -31,4 +31,8 @@ class Student extends Model
     {
         return $this->belongsTo('App\Location');
     }
+
+    public function scopeGetTotalPrice($query, $month, $year) {
+        return $query->where('month', $month)->where('year', $year)->sum('rate');
+    }
 }

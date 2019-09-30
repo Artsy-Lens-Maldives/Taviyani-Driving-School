@@ -12,6 +12,11 @@ class Student extends Model
     protected $guarded = [];
     protected $dates = ['deleted_at'];
 
+    public function instructor()
+    {
+        return $this->belongsTo('App\Instructor');
+    }
+
     public function categories()
     {
         return $this->belongsToMany('App\Category');

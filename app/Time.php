@@ -10,4 +10,9 @@ class Time extends Model
     {
         return $this->hasMany('App\Slot', 'time_id');
     }
+
+    public function instructors()
+    {
+        return $this->belongsToMany('App\Instructor');
+    }
 }

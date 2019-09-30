@@ -83,8 +83,8 @@
                     @elseif ($student->refunded == '1')
                         <button class="btn btn-danger">Refunded</button>
                     @else
-                        @if ($student->slot !== NULL)
-                            {{ $student->slot->instructor->name }}
+                        @if ($student->instructor)
+                            {{ $student->instructor->name }}
                         @else
                             <button onclick="updateTime({{ $student->id }})" data-toggle="modal" data-target="#feeAddModel" class="btn btn-warning" style="margin: 1px">Unassigned</button>
                         @endif
@@ -115,20 +115,22 @@
 @endsection
 
 @section('model-body')
-    <form id="feeForm" action="/instructor/assign-student" method="POST">
+    <form id="feeForm" action="/student/assign-student" method="POST">
         @csrf
         <input type="hidden" name="student_id" id="student_id">
         <div class="form-group">
             <label>Instructor</label>
             <select class="form-control" name="instructor_id" id="instructor">
+                <option value="0">Unassgined</option>
                 @foreach ($instructors as $instructor)
-                    <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>    
+                    <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
                 @endforeach
             </select>
         </div>
         <div class="form-group">
             <label>Select Time</label>
             <select class="form-control" name="time_id" id="times">
+                <option value="0">Unassgined</option>
             </select>
         </div>
     </form>
@@ -240,7 +242,7 @@
                 type: "GET",
                 url: "/api/free-times/"+id,
                 success: function(times) {
-                    $("#times").html(times);
+                    $("#times").html('<option value="0">Unassgined</option>'+times);
                     console.log('Updated');
                 }
             });

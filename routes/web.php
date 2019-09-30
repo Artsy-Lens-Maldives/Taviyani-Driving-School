@@ -51,8 +51,8 @@ Route::prefix('/slot')->group(function () {
 
 Route::prefix('/table')->group(function () {
     Route::get('/', function () {
-        $instructors = Instructor::with('slots')->with('categories')->get();
-        $times = Time::with('slots')->with('slots.student')->with('slots.student.categories')->get();
+        $instructors = Instructor::with('times')->with('categories')->with('students')->get();
+        $times = Time::with('instructors')->get();
 
         // return $times;
 
@@ -92,7 +92,9 @@ Route::prefix('/student')->group(function () {
         $student = Student::findOrFail($id);
         $categories = Category::all();
         $locations = Location::all();
-        return view('student.edit', compact('student', 'categories', 'locations'));
+        $instructors = Instructor::all();
+
+        return view('student.edit', compact('student', 'categories', 'locations', 'instructors'));
     });
     Route::post('/edit/{student}', function(Student $student, Request $request){
         $student->name = $request->name;
@@ -105,8 +107,10 @@ Route::prefix('/student')->group(function () {
         $student->license_no = $request->license_no;
         $student->rate = $request->rate;
         $student->discount = $request->discount;
+        $student->instructor_id = $request->instructor_id;
+        $student->time_id = $request->time_id;
         $student->save();
-
+        
         // Old check
         if ($student->location_id !== $request->location_id) {
             $student->location_id = $request->location_id;
@@ -430,7 +434,8 @@ Route::prefix('/instructor')->group(function (){
         }
 
         if ($request->time) {
-            $oldSlotsIDs = Slot::where('instructor_id', $instructor->id)->pluck('time_id')->toArray();
+            $oldSlotsIDs = $instructor->times->pluck('times.id')->toArray();
+            // dd($oldSlotsIDs);
             
             $removed = array_diff($oldSlotsIDs, $request->time);
             $added = array_diff($request->time, $oldSlotsIDs);
@@ -439,8 +444,6 @@ Route::prefix('/instructor')->group(function (){
             if ($removed) {
                 foreach ($removed as $remove) {
                     $instructor->times()->detach($remove);
-                    $slot = Slot::where('instructor_id', $instructor->id)->where('time_id', $remove)->first();
-                    $slot->delete();
                 }
             }
             
@@ -448,15 +451,6 @@ Route::prefix('/instructor')->group(function (){
             if ($added) {
                 foreach ($added as $id) {
                     $instructor->times()->attach($id);
-
-                    $checkSlot = Slot::where('instructor_id', $instructor->id)->where('time_id', $id)->first();
-    
-                    if ($checkSlot == null) {
-                        $slot = new Slot;
-                        $slot->instructor_id = $instructor->id;
-                        $slot->time_id = $id;
-                        $slot->save();
-                    }
                 }
                 
             }
@@ -535,7 +529,7 @@ Route::prefix('/transport-fee')->group(function () {
             $fees = Transportfee::where('type', 'theory')->with('student')->get();
             $type = 'Theory Fees';
 
-            $students = Student::all();
+            $students = Student::where('finished_at', '=', null)->latest()->get();
             
             return view('transportfee.theory.index', compact('fees', 'type', 'students'));
         });
@@ -588,7 +582,8 @@ Route::prefix('/transport-fee')->group(function () {
             $fees = Transportfee::where('type', 'driving')->get();
             $type = 'Driving Fees';
 
-            $students = Student::all();
+            $students = Student::where('finished_at', '=', null)->latest()->get();
+
             return view('transportfee.driving.index', compact('fees', 'type', 'students'));
         });
 
@@ -644,7 +639,8 @@ Route::prefix('/transport-fee')->group(function () {
             $fees = Transportfee::where('type', 'license')->get();
             $type = 'Theory Fees';
 
-            $students = Student::all();
+            $students = Student::where('finished_at', '=', null)->latest()->get();
+            
             return view('transportfee.license.index', compact('fees', 'type', 'students'));
         });
 

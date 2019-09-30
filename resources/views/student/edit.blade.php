@@ -125,6 +125,39 @@
                             </select>
                         </div>
                         <hr>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Select Instructor</label>
+                                <select class="form-control" name="instructor_id" id="instructor">
+                                    <option value="0">Unassgined</option>
+                                    @foreach ($instructors as $instructor)
+                                        <option value="{{ $instructor->id }}"
+                                        @if ($instructor->id == $student->instructor_id)
+                                        selected
+                                        @endif
+                                        >{{ $instructor->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Select Time</label>
+                                <div class="form-group">
+                                    <select class="form-control" name="time_id" id="times">
+                                        <option value="0">Unassgined</option>
+                                        @if ($student->instructor)
+                                            @foreach ($student->instructor->times as $time)
+                                                <option value="{{ $time->id }}"
+                                                @if ($time->id == $student->time_id)
+                                                selected
+                                                @endif
+                                                >{{ $time->time }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Update</button>
                         @if ($student->refunded == '0')
                         <a href="/student/refund/{{ $student->id }}" class="btn btn-danger float-right">Refund</a>
@@ -143,6 +176,25 @@
 @section('js')
 
 <script type="text/javascript">
+    $( document ).ready(function() {
+        $("#instructor").change(function() {
+            updateTime();
+        });
+    });
+
+    function updateTime() {
+        var id = $( "#instructor" ).val();
+        console.log(id);
+        $.ajax({
+            type: "GET",
+            url: "/api/free-times/"+id,
+            success: function(times) {
+                $("#times").html('<option value="0">Unassgined</option>'+times);
+                console.log('Updated');
+            }
+        });
+    }
+    
     $('.datepicker').datepicker({
         format: 'dd/mm/yyyy',
         endDate: '-18y',

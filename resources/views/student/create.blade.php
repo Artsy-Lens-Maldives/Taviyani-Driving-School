@@ -115,6 +115,25 @@
                                 </select>
                             </div>
                             <hr>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>Select Instructor</label>
+                                    <select class="form-control" name="location_id" id="instructor">
+                                        <option value="0">Unassgined</option>
+                                        @foreach ($instructors as $instructor)
+                                            <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Select Time</label>
+                                    <div class="form-group">
+                                        <select class="form-control" name="time_id" id="times">
+                                            <option value="0">Unassgined</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-primary">Next Step</button>
                         </form>
                     </div>
@@ -127,6 +146,27 @@
     @section('js')
 
     <script type="text/javascript">
+        $( document ).ready(function() {
+            updateTime();
+
+            $("#instructor").change(function() {
+                updateTime();
+            });
+        });
+
+        function updateTime() {
+            var id = $( "#instructor" ).val();
+            console.log(id);
+            $.ajax({
+                type: "GET",
+                url: "/api/free-times/"+id,
+                success: function(times) {
+                    $("#times").html('<option value="0">Unassgined</option>'+times);
+                    console.log('Updated');
+                }
+            });
+        }
+
         var current = $("#rate").attr('value');
         console.log(current);
 

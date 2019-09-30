@@ -114,31 +114,20 @@
                         @endforeach
                         <hr>
                         <h4>Select Working Hours</h4>
-                        <h6>Changing this will reset the students assigned</h6>
                         @foreach ($times as $time)
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" name="time[]" value="{{ $time->id }}"
+                                <input class="form-check-input" for="checkboxTime{{ $time->id }}" type="checkbox" name="time[]" value="{{ $time->id }}"
                                 @foreach ($insTimes as $time2)
                                     @if ($time2->id == $time->id)
                                         checked
                                     @endif
                                 @endforeach
                                 >
-                                <label class="form-check-lablel">
+                                <label id="checkboxTime{{ $time->id }}" class="form-check-lablel">
                                     {{ $time->time }}
                                 </label>
                             </div>
                         @endforeach
-                        <hr>
-                        <div>
-                            @foreach ($insSlots as $slot)
-                                @if ($slot->student)
-                                    <button class="btn btn-lg btn-danger" style="margin: 3px">{{ $slot->time->time }} <br> {{ $slot->student->name }}</button>
-                                @else
-                                    <button class="btn btn-lg btn-success" style="margin: 3px">{{ $slot->time->time }} <br> EMPTY</button>
-                                @endif
-                            @endforeach
-                        </div>
                         <hr>
                         <h4>Login Details</h4>
                         <div class="form-group">

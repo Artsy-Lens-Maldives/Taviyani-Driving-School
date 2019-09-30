@@ -51,15 +51,15 @@ Route::get('/instructor/free-times/{id}', function($id) {
 });
 
 Route::get('/free-times/{id}', function($id) {
-    $slots = Slot::where('isEmpty', '1')->where('instructor_id', $id)->with('time')->get();
+    $instructor = Instructor::where('id', $id)->with('times')->first();
     
-    foreach ($slots as $slot) {
-        echo "<option value='". $slot->time->id ."'>". $slot->time->time ."</option>";
+    foreach ($instructor->times as $time) {
+        echo "<option value='". $time->id ."'>". $time->time ."</option>";
     }
 });
 
 Route::get('/student/names', function(){
-    return Student::pluck('name', 'id_card');
+    return Student::where('finished_at', '=', null)->latest()->pluck('name', 'id_card');
 });
 
 Route::get('/slip-info/{id}', function($id){

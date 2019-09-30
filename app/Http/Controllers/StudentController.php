@@ -61,8 +61,9 @@ class StudentController extends Controller
     {
         $categories = Category::all();
         $locations = Location::all();
+        $instructors = Instructor::all();
 
-        return view('student.create', compact('categories', 'locations'));
+        return view('student.create', compact('categories', 'locations', 'instructors'));
     }
 
     public function create_step_1_store(Request $request)
@@ -79,7 +80,9 @@ class StudentController extends Controller
             'location_id' => $request->location_id,
             'user_id' => \Auth::user()->id,
             'rate' => $request->rate,
-            'discount' =>$request->discount
+            'discount' => $request->discount,
+            'instructor_id' => $request->instructor_id,
+            'time_id' => $request->time_id
         ]);
 
         foreach ($request->category as $category) {
@@ -115,23 +118,13 @@ class StudentController extends Controller
 
     public function assignStudent(Request $request) {
         // $instructor = Instructor::findOrFail($request->instructor_id);
-        // $student = Student::findOrFail($request->student_id);
+        $student = Student::findOrFail($request->student_id);
         // $time = Time::findOrFail($request->time);
 
-        $slot = Slot::where('instructor_id', $request->instructor_id)
-                      ->where('time_id', $request->time_id)
-                      ->where('IsEmpty', '1')
-                      ->first();
+        $student->instructor_id = $request->instructor_id;
+        $student->time_id = $request->time_id;
+        $student->save();
 
-        // return $slot;
-
-        if ($slot !== null) {
-            $slot->student_id = $request->student_id;
-            $slot->isEmpty = '0';
-            $slot->save();
-            return redirect('table');
-        } else {
-            return redirect('student');
-        }
+        return redirect()->back();
     }
 }

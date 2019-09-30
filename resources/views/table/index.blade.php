@@ -25,14 +25,13 @@
             @foreach ($times as $time)
                 <tr>
                     <td>{{ $time->time }}</td>
-                    @foreach ($time->slots as $slot)
-                    <td style="background-color: rgb(173,216,230)">
-                        <?php $student = $slot->student ?>
-                        @if ($slot->isEmpty == 0)
-                            @if ($student)
-                                <b>{{ $student->name }}</b> - {{ $student->phone }} - @foreach ($student->categories as $category) [{{ $category->code }}] @endforeach
-                            @endif
-                        @endif
+                    @foreach($instructors as $instructor)
+                    <td>
+                        <?php $students = \App\Student::where('finished_at', '=', null)->where('instructor_id', $instructor->id)->where('time_id', $time->id)->with('categories')->get() ?>
+                        @foreach ($students as $student)
+                           <b>{{ $student->name }}</b> - (@foreach ($student->categories as $category) {{ $category->code }} @endforeach)
+                           <br>
+                        @endforeach
                     </td>
                     @endforeach
                 </tr>

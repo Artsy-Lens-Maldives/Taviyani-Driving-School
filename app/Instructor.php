@@ -36,4 +36,9 @@ class Instructor extends Model
     {
         return $this->belongsToMany('App\Time');
     }
+
+    public function students()
+    {
+        return $this->hasMany('App\Student');
+    }
 }

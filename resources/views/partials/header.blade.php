@@ -94,6 +94,8 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{ url('/theory/waiting') }}">Theory Waiting Page</a>
+                        <hr>
+                        <a class="dropdown-item" href="{{ url('/theory/manage') }}">Manage Theory Questions</a>
                     </div>
                 </li>
                 @endrole

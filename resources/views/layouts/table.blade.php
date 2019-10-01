@@ -66,6 +66,9 @@
                     @yield('above-table')
                 </div>
                 <div class="col-md-12">
+                    <hr>
+                </div>
+                <div class="col-md-12">
                     <table id="example" width="100%" class="table table-bordered" data-page-length="25">
                         @yield('table')
                     </table>

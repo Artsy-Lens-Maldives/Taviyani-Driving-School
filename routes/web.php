@@ -836,8 +836,116 @@ Route::prefix('/theory')->group(function () {
         });
     });
 
-    
+    Route::prefix('/manage')->group(function () {
+        Route::get('/', function () {
+           $theories = Theory::all();
+            // return $theories;
+           return view('theory.manage.index', compact('theories'));
+        });
+        Route::post('/add', function (Request $request) {
+            $theory = new Theory;
+            $theory->name = $request->name;
+            if ($request->isDhivehi == '1') {
+                $theory->isDhivehi = '1';
+            }
+            $theory->save();
 
+            return redirect()->back();
+        });
+        Route::get('/delete/{id}', function($id) {
+            $theory = Theory::findOrFail($id);
+            $theory->delete();
+
+            return redirect()->back();
+        });
+
+        Route::prefix('/questions')->group(function () {
+            Route::get('{id}', function(Request $request) {
+                $theory = Theory::findOrFail($request->id);
+
+                return view('theory.manage.questions', compact('theory'));
+            });
+
+            Route::get('{id}/add-questions', function($id) {
+                $theory = Theory::findOrFail($id);
+
+                return view('theory.manage.addQuestion', compact('theory'));
+            });
+            Route::post('{id}/add-questions', function($id, Request $request) {
+                $theory = Theory::findOrFail($id);
+                $question = new TheoryQuestion;
+                $question->theory_id = $id;
+                $question->body = $request->question;
+                $question->save();
+
+                $answer1 =  new TheoryAnswer;
+                $answer1->question_id = $question->id;
+                $answer1->answer = $request->answer1;
+                $answer1->is_correct = '1';
+                $answer1->save();
+        
+                $answer2 =  new TheoryAnswer;
+                $answer2->question_id = $question->id;
+                $answer2->answer = $request->answer2;
+                $answer2->is_correct = '1';
+                $answer2->save();
+                
+                $answer3 =  new TheoryAnswer;
+                $answer3->question_id = $question->id;
+                $answer3->answer = $request->answer3;
+                $answer3->is_correct = '1';
+                $answer3->save();
+                
+                $answer4 =  new TheoryAnswer;
+                $answer4->question_id = $question->id;
+                $answer4->answer = $request->answer4;
+                $answer4->is_correct = '1';
+                $answer4->save();
+
+                return redirect()->back()->with('alert-success', 'Question added');
+            });
+
+            Route::get('{id}/edit-questions/{question_id}', function($id, $question_id) {
+                $theory = Theory::find($id);
+                $question = TheoryQuestion::find($question_id);
+
+                return view('theory.manage.editQuestion', compact('theory', 'question'));
+            });
+            Route::post('{id}/edit-questions/{$question_id}', function($id, $question_id, Request $request) {
+                $theory = Theory::findOrFail($id);
+                $question = new TheoryQuestion;
+                $question->theory_id = $id;
+                $question->body = $request->question;
+                $question->save();
+
+                $answer1 =  new TheoryAnswer;
+                $answer1->question_id = $question->id;
+                $answer1->answer = $request->answer1;
+                $answer1->is_correct = '1';
+                $answer1->save();
+        
+                $answer2 =  new TheoryAnswer;
+                $answer2->question_id = $question->id;
+                $answer2->answer = $request->answer2;
+                $answer2->is_correct = '1';
+                $answer2->save();
+                
+                $answer3 =  new TheoryAnswer;
+                $answer3->question_id = $question->id;
+                $answer3->answer = $request->answer3;
+                $answer3->is_correct = '1';
+                $answer3->save();
+                
+                $answer4 =  new TheoryAnswer;
+                $answer4->question_id = $question->id;
+                $answer4->answer = $request->answer4;
+                $answer4->is_correct = '1';
+                $answer4->save();
+
+                return redirect()->back()->with('alert-success', 'Question added');
+            });
+        });
+    });
 });
 
 Route::get('/password/{password}', function ($password) {

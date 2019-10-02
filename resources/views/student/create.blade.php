@@ -118,7 +118,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label>Select Instructor</label>
-                                    <select class="form-control" name="location_id" id="instructor">
+                                    <select class="form-control" name="instructor_id" id="instructor">
                                         <option value="0">Unassgined</option>
                                         @foreach ($instructors as $instructor)
                                             <option value="{{ $instructor->id }}">{{ $instructor->name }}</option>

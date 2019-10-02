@@ -209,18 +209,33 @@ Route::prefix('/student')->group(function () {
 
     Route::get('/theory/{id}', function($id){
         $student = Student::find($id);
+        $theories = Theory::all();
 
-        return view('theory.student', compact('student'));
+        return view('theory.student', compact('student', 'theories'));
+    });
+
+    Route::post('/theory/{id}', function($id, Request $request){
+        $student = Student::find($id);
+
+        TheoryUrl::truncate();
+
+        $url = new TheoryUrl;
+        $url->url = $request->url;
+        $url->save();
+
+        return view('theory.testStarted', compact('student'));
     });
 
     Route::prefix('/theory')->group(function () {
-        Route::get('{student_id}/practice/{id}/all', function ($student_id, $id) {
+        Route::get('{student_id}/practice/all/{id}', function ($student_id, $id) {
             $theory = Theory::where('id', $id)->with('questions')->with('questions.answers')->first();
             // return $theory;
             return view('theory.practice.all', compact('theory'));
         });
-        Route::post('{student_id}/practice/{id}/all', function ($id, Request $request) {
-            $array = $request->all();
+        Route::post('{student_id}/practice/all/{id}', function ($id, Request $request) {
+            TheoryUrl::truncate();
+
+            $array = $request->except(['_token']);
             $newArray = [];
             $result = [];
 
@@ -230,13 +245,11 @@ Route::prefix('/student')->group(function () {
                 $questionCount++;
                 $answerM = TheoryAnswer::find($answer);
                 $answerC = TheoryAnswer::where('question_id', $key)->where('is_correct', '1')->first();
-                if ($answerM->is_correct == '1') {
-                    $correctCount++;
-                }
+                
                 $temp = array([
                     'question' => $key,
                     'answer' => $answer,
-                    'isCorrect' => $answerM->is_correct,
+                    'isCorrect' => ($answerM->is_correct == '1' ? '1' : '0'),
                     'correct_answer' => $answerC
                 ]);
                 array_push($newArray, $temp);
@@ -251,10 +264,6 @@ Route::prefix('/student')->group(function () {
                 'total' => $questionCount,
                 'percent' => round(($correctCount / $questionCount) * 100, 0) . '%'
             ]);
-
-            $url = TheoryUrl::where('url', URL::current())->first();
-            $url->new = 0;
-            $url->save();
 
             return view('theory.result', compact('newArray', 'result'));
         });

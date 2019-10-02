@@ -19,6 +19,16 @@
 
             @foreach ($newArray as $item)
                 {{ $item[0]['question'] }}
+                <br>
+                {{ $item[0]['answer'] }}
+                <br>
+                {{ $item[0]['isCorrect'] }}
+                <br>
+                {{ $item[0]['correct_answer'] }}
+
+                <h3></h3>
+
+                <hr>
             @endforeach
         </div>
     </div>

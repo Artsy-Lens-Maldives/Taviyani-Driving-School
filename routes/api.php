@@ -190,3 +190,7 @@ Route::post('/create-new-test', function(Request $request){
 
     return $url;
 });
+
+Route::get('/v2/address/find', function(Request $request) {
+    return App\Address::search($request->get('q'))->get();
+});

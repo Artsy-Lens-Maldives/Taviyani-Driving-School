@@ -149,7 +149,7 @@
         // Set the Options for "Bloodhound" suggestion engine
         var engine = new Bloodhound({
             remote: {
-                url: 'https://taviyani.xyz/api/v2/address/find?q=%QUERY%',
+                url: '/api/v2/address/find?q=%QUERY%',
                 wildcard: '%QUERY%'
             },
             datumTokenizer: Bloodhound.tokenizers.whitespace('q'),

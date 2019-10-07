@@ -50,7 +50,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="inputAddress2">Residential Address</label>
-                                <input type="text" class="form-control" name="c_address" id="c_address" placeholder="G.House Name" required>
+                                <input type="text" class="form-control" name="c_address" id="c_address" placeholder="G.House Name" autocomplete="new-address"  required>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
@@ -146,6 +146,24 @@
     @section('js')
 
     <script type="text/javascript">
+        // Set the Options for "Bloodhound" suggestion engine
+        var engine = new Bloodhound({
+            remote: {
+                url: 'https://taviyani.xyz/api/v2/address/find?q=%QUERY%',
+                wildcard: '%QUERY%'
+            },
+            datumTokenizer: Bloodhound.tokenizers.whitespace('q'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace
+        });
+
+        $("#c_address").typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 3
+        }, {
+            source: engine.ttAdapter(),
+        });
+
         $( document ).ready(function() {
             updateTime();
 

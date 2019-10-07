@@ -109,14 +109,10 @@ Route::prefix('/student')->group(function () {
         $student->discount = $request->discount;
         $student->instructor_id = $request->instructor_id;
         $student->time_id = $request->time_id;
+        $student->location_id = $request->location_id;
         $student->save();
         
         // Old check
-        if ($student->location_id !== $request->location_id) {
-            $student->location_id = $request->location_id;
-            $student->save();
-
-        }
 
         // return $request->category;
 

@@ -147,22 +147,22 @@
 
     <script type="text/javascript">
         // Set the Options for "Bloodhound" suggestion engine
-        var engine = new Bloodhound({
-            remote: {
-                url: '/api/v2/address/find?q=%QUERY%',
-                wildcard: '%QUERY%'
-            },
-            datumTokenizer: Bloodhound.tokenizers.whitespace('q'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace
-        });
+        // var engine = new Bloodhound({
+        //     remote: {
+        //         url: '/api/v2/address/find?q=%QUERY%',
+        //         wildcard: '%QUERY%'
+        //     },
+        //     datumTokenizer: Bloodhound.tokenizers.whitespace('q'),
+        //     queryTokenizer: Bloodhound.tokenizers.whitespace
+        // });
 
-        $("#c_address").typeahead({
-            hint: true,
-            highlight: true,
-            minLength: 3
-        }, {
-            source: engine.ttAdapter(),
-        });
+        // $("#c_address").typeahead({
+        //     hint: true,
+        //     highlight: true,
+        //     minLength: 3
+        // }, {
+        //     source: engine.ttAdapter(),
+        // });
 
         $( document ).ready(function() {
             updateTime();
